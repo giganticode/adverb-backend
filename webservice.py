@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 from controllers.code_summary_controller import CodeSummaryController
 from controllers.code_symbol_controller import CodeSymbolController
+from controllers.code_search_controller import CodeSearchController
 
 DEBUG = True
 PORT = 8080
@@ -15,6 +16,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 # controllers
 code_summary = CodeSummaryController()
 code_symbol = CodeSymbolController()
+code_search = CodeSearchController()
 
 # API routes
 @app.route("/api/summary", methods = ["POST"])
@@ -33,6 +35,18 @@ def get_summary():
 def get_symbol_name():
     try:
         name = code_symbol.get_symbol_name(request)
+        if name:
+            response = jsonify(name)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response
+    except:
+        pass
+    return "Bad request", "400"
+
+@app.route("/api/search", methods = ["POST"])
+def search():
+    try:
+        name = code_search.search_for_text(request)
         if name:
             response = jsonify(name)
             response.headers.add("Access-Control-Allow-Origin", "*")
