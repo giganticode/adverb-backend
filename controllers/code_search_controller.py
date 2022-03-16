@@ -1,7 +1,8 @@
+from dataclasses import dataclass
 from flask import json
 from flask.wrappers import Request
 import torch
-from torch.utils.data import DataLoader, TensorDataset, RandomSampler, SequentialSampler
+from torch.utils.data import DataLoader, TensorDataset, SequentialSampler
 from transformers import RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification
 import numpy as np
 from tqdm import tqdm
@@ -18,14 +19,13 @@ class CodeSearchController:
         if not content or not search_text:
             return None
         
-        search_interval = 10
         max_seq_length = 200
         sequence_a_segment_id = 0
         sequence_b_segment_id = 1
         cls_token_segment_id = 1
         pad_token = 0
         pad_token_segment_id = 0
-        eval_batch_size = 8
+        batch_size = 8
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         config = RobertaConfig.from_pretrained("microsoft/codebert-base", num_labels=2, finetuning_task="codesearch")
@@ -38,7 +38,8 @@ class CodeSearchController:
         i = 0
         while i < len(lines):
             search_text_tokens = tokenizer.tokenize(search_text)[:50]
-            code = lines[i : (i+search_interval)]
+            code = lines[i : (i + batch_size)]
+            code = "\n".join(code)
             code_tokens = tokenizer.tokenize(code)
             self.truncate_seq_pair(search_text_tokens, code_tokens, max_seq_length-3)
 
@@ -65,7 +66,7 @@ class CodeSearchController:
                           segment_ids=segment_ids,
                           label_id=0))
 
-            i += (search_interval + 1)
+            i += (batch_size + 1)
 
         all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
         all_input_mask = torch.tensor([f.input_mask for f in features], dtype=torch.long)
@@ -74,7 +75,7 @@ class CodeSearchController:
         dataset = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
 
         eval_sampler = SequentialSampler(dataset)
-        eval_dataloader = DataLoader(dataset, sampler=eval_sampler, batch_size=eval_batch_size)
+        eval_dataloader = DataLoader(dataset, sampler=eval_sampler, batch_size=batch_size)
 
         eval_loss = 0.0
         nb_eval_steps = 0
@@ -105,9 +106,16 @@ class CodeSearchController:
 
         eval_loss = eval_loss / nb_eval_steps
         preds_label = np.argmax(preds, axis=1)
-        all_logits = preds.tolist()
+        # all_logits = preds.tolist()
 
-        return { "result": all_logits }
+        search_lines = []
+        print(preds_label[0])
+        for i in range(len(preds_label)):
+            start = i * batch_size
+            text = "\n".join(lines[start:start + batch_size - 1])
+            label = int(str(preds_label[i]))
+            search_lines.append(SearchLine(start, text, label))
+        return { "result": { search_text: search_text, lines: search_lines, batch_size: batch_size } }
 
 
     def truncate_seq_pair(self, tokens_a, tokens_b, max_length):
@@ -126,3 +134,16 @@ class InputFeatures(object):
         self.input_mask = input_mask
         self.segment_ids = segment_ids
         self.label_id = label_id
+
+@dataclass
+class SearchLine(object):
+    def __init__(self, line: int, text: str, label: int):
+        self.line = line
+        self.text = text
+        self.label = label
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+    
+    def serialize(self):
+        return self.toJSON()

@@ -51,7 +51,8 @@ def search():
             response = jsonify(name)
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response
-    except:
+    except Exception as e:
+        print(str(e))
         pass
     return "Bad request", "400"
 
