@@ -46,13 +46,12 @@ def get_symbol_name():
 @app.route("/api/search", methods = ["POST"])
 def search():
     try:
-        name = code_search.search_for_text(request)
-        if name:
-            response = jsonify(name)
+        search_result = code_search.search_for_text(request)
+        if search_result:
+            response = jsonify(search_result)
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response
-    except Exception as e:
-        print(str(e))
+    except:
         pass
     return "Bad request", "400"
 

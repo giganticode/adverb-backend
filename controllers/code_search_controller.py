@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from flask import json
+from typing import List
+from flask import json, jsonify
 from flask.wrappers import Request
 import torch
 from torch.utils.data import DataLoader, TensorDataset, SequentialSampler
@@ -16,6 +17,7 @@ class CodeSearchController:
         data = json.loads(request.data)
         content = data.get("content", "")
         search_text = data.get("search", "")
+        batch_size = data.get("batch_size", 8)
         if not content or not search_text:
             return None
         
@@ -25,7 +27,6 @@ class CodeSearchController:
         cls_token_segment_id = 1
         pad_token = 0
         pad_token_segment_id = 0
-        batch_size = 8
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         config = RobertaConfig.from_pretrained("microsoft/codebert-base", num_labels=2, finetuning_task="codesearch")
@@ -109,13 +110,14 @@ class CodeSearchController:
         # all_logits = preds.tolist()
 
         search_lines = []
-        print(preds_label[0])
         for i in range(len(preds_label)):
-            start = i * batch_size
-            text = "\n".join(lines[start:start + batch_size - 1])
+            line = i * batch_size
+            #text = "\n".join(lines[line : line + batch_size - 1])
             label = int(str(preds_label[i]))
-            search_lines.append(SearchLine(start, text, label))
-        return { "result": { search_text: search_text, lines: search_lines, batch_size: batch_size } }
+            if label == 1:
+                #search_lines.append({"line": line, "text": text, "label": label})
+                search_lines.append(line)
+        return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
 
 
     def truncate_seq_pair(self, tokens_a, tokens_b, max_length):
@@ -134,16 +136,3 @@ class InputFeatures(object):
         self.input_mask = input_mask
         self.segment_ids = segment_ids
         self.label_id = label_id
-
-@dataclass
-class SearchLine(object):
-    def __init__(self, line: int, text: str, label: int):
-        self.line = line
-        self.text = text
-        self.label = label
-
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-    
-    def serialize(self):
-        return self.toJSON()
