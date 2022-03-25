@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-from typing import List
-from flask import json, jsonify
+from flask import json
 from flask.wrappers import Request
 import torch
 from torch.utils.data import DataLoader, TensorDataset, SequentialSampler
