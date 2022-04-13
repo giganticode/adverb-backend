@@ -77,7 +77,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=DEBUG, action="store_true", help="Start the server in debug mode.")
     parser.add_argument("--port", default=PORT, type=int, action="store", help="Set the port for of the web server.")
-    parser.add_argument("--host", default="127.0.0.1", type=str, action="store", help="Set the host of the web server.")
+    parser.add_argument("--host", default="0.0.0.0", type=str, action="store", help="Set the host of the web server.")
     args = parser.parse_args()
 
     port = args.port
