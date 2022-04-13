@@ -15,7 +15,7 @@ class CodeSymbolController:
             return None
         
         model_type = data.get("modelType", 2)
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
         
         if model_type == 0:
             model = RobertaForMaskedLM.from_pretrained("huggingface/CodeBERTa-small-v1")

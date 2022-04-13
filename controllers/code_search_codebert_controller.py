@@ -26,7 +26,7 @@ class CodeSearchCodeBertController:
         pad_token = 0
         pad_token_segment_id = 0
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
         config = RobertaConfig.from_pretrained("microsoft/codebert-base", num_labels=2, finetuning_task="codesearch")
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaForSequenceClassification.from_pretrained("microsoft/codebert-base", config=config)
