@@ -34,7 +34,8 @@ def get_summary():
             response = jsonify(summary)
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response
-    except:
+    except Exception as e:
+        print(e)
         pass
     return "Bad request", "400"
 
@@ -46,21 +47,24 @@ def get_symbol_name():
             response = jsonify(name)
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response
-    except:
+    except Exception as e:
+        print(e)
         pass
     return "Bad request", "400"
 
-# @app.route("/api/search", methods = ["POST"])
-# def search():
-#     try:
-#         search_result = code_search_col_bert.search_for_text(request)
-#         if search_result:
-#             response = jsonify(search_result)
-#             response.headers.add("Access-Control-Allow-Origin", "*")
-#             return response
-#     except:
-#         pass
-#     return "Bad request", "400"
+@app.route("/api/search", methods = ["POST"])
+def search():
+    try:
+        search_result = code_search_code_bert.search_for_text(request)
+        # search_result = code_search_col_bert.search_for_text(request)
+        if search_result:
+            response = jsonify(search_result)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response
+    except Exception as e:
+        print(e)
+        pass
+    return "Bad request", "400"
 
 # @app.route("/api/search_index", methods = ["POST"])
 # def search_index():
