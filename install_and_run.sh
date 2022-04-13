@@ -34,5 +34,5 @@ echo Installing PyTorch...
 pip3 install torch torchvision torchaudio
 
 # start server
-echo Starting API-Server at http://localhost:8080
+echo Starting API-Server...
 ./run.sh
