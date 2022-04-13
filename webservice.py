@@ -2,9 +2,6 @@ import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
 os.environ["CUDA_VISIBLE_DEVICES"]="3"
 tf_device='/gpu:0'
-import torch
-if torch.cuda.is_available():
-    torch.cuda.set_device(3)
 
 import argparse
 from flask import Flask, jsonify, request
