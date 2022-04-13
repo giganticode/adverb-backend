@@ -1,13 +1,19 @@
+import os 
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
+tf_device='/gpu:0'
+
 import argparse
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from controllers.code_summary_controller import CodeSummaryController
 from controllers.code_symbol_controller import CodeSymbolController
-from controllers.code_search_controller import CodeSearchController
+from controllers.code_search_codebert_controller import CodeSearchCodeBertController
+# from controllers.code_search_colbert_controller import CodeSearchColBertController
 
 DEBUG = True
-PORT = 8080
+PORT = 8090
 
 app = Flask(__name__, static_folder="")
 # enable CORS for api endpoint
@@ -16,7 +22,8 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 # controllers
 code_summary = CodeSummaryController()
 code_symbol = CodeSymbolController()
-code_search = CodeSearchController()
+code_search_code_bert = CodeSearchCodeBertController()
+# code_search_col_bert = CodeSearchColBertController()
 
 # API routes
 @app.route("/api/summary", methods = ["POST"])
@@ -43,17 +50,27 @@ def get_symbol_name():
         pass
     return "Bad request", "400"
 
-@app.route("/api/search", methods = ["POST"])
-def search():
-    try:
-        search_result = code_search.search_for_text(request)
-        if search_result:
-            response = jsonify(search_result)
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            return response
-    except:
-        pass
-    return "Bad request", "400"
+# @app.route("/api/search", methods = ["POST"])
+# def search():
+#     try:
+#         search_result = code_search_col_bert.search_for_text(request)
+#         if search_result:
+#             response = jsonify(search_result)
+#             response.headers.add("Access-Control-Allow-Origin", "*")
+#             return response
+#     except:
+#         pass
+#     return "Bad request", "400"
+
+# @app.route("/api/search_index", methods = ["POST"])
+# def search_index():
+#     try:
+#         code_search_col_bert.index(request)
+#         return "Success", "200"
+#     except Exception as e:
+#         print(e)
+#         pass
+#     return "Bad request", "400"
 
 
 if __name__ == "__main__":

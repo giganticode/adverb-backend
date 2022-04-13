@@ -6,7 +6,7 @@ from transformers import RobertaConfig, RobertaTokenizer, RobertaForSequenceClas
 import numpy as np
 from tqdm import tqdm
 
-class CodeSearchController:
+class CodeSearchCodeBertController:
 
     def search_for_text(self, request: Request):
         if not request.data:
