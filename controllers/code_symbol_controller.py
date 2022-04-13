@@ -15,25 +15,25 @@ class CodeSymbolController:
             return None
         
         model_type = data.get("modelType", 2)
-        device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         if model_type == 0:
             model = RobertaForMaskedLM.from_pretrained("huggingface/CodeBERTa-small-v1")
-            model.to(device)
+            # model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("huggingface/CodeBERTa-small-v1")
             fill_mask = pipeline("fill-mask", model=model, tokenizer=tokenizer)
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         elif model_type == 1:
             model = RobertaForMaskedLM.from_pretrained("microsoft/codebert-base-mlm")
-            model.to(device)
+            # model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
             fill_mask = pipeline("fill-mask", model=model, tokenizer=tokenizer)
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         else:
             model = T5ForConditionalGeneration.from_pretrained("Salesforce/codet5-base")
-            model.to(device)
+            # model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("Salesforce/codet5-base")
             input_ids = tokenizer(text, return_tensors="pt").input_ids
             generated_ids = model.generate(input_ids, max_length=8)
