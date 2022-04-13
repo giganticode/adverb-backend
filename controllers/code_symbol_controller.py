@@ -21,21 +21,22 @@ class CodeSymbolController:
             model = RobertaForMaskedLM.from_pretrained("huggingface/CodeBERTa-small-v1")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("huggingface/CodeBERTa-small-v1")
-            fill_mask = pipeline("fill-mask", model=model, tokenizer=tokenizer)
+            fill_mask = pipeline("fill-mask", model=model, tokenizer=tokenizer, device=-1 if device == "cpu" else 0)
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         elif model_type == 1:
             model = RobertaForMaskedLM.from_pretrained("microsoft/codebert-base-mlm")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
-            fill_mask = pipeline("fill-mask", model=model, tokenizer=tokenizer)
+            fill_mask = pipeline("fill-mask", model=model, tokenizer=tokenizer, device=-1 if device == "cpu" else 0)
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         else:
             model = T5ForConditionalGeneration.from_pretrained("Salesforce/codet5-base")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("Salesforce/codet5-base")
-            input_ids = tokenizer(text, return_tensors="pt").input_ids
+            device_tokenizer = tokenizer(text, return_tensors="pt").to(device)
+            input_ids = device_tokenizer.input_ids
             generated_ids = model.generate(input_ids, max_length=8)
             result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
