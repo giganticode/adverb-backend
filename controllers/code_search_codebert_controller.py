@@ -82,7 +82,7 @@ class CodeSearchCodeBertController:
         out_label_ids = None
         for batch in tqdm(eval_dataloader, desc="Evaluating"):
             model.eval()
-            batch = tuple(t.to(device) for t in batch)
+            batch = tuple(t for t in batch) #t.to(device)
 
             with torch.no_grad():
                 inputs = {'input_ids': batch[0],
