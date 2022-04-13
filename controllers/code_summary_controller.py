@@ -15,7 +15,7 @@ class CodeSummaryController:
         if not text:
             return None
 
-        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
         model_name = "Salesforce/codet5-base-multi-sum"
         tokenizer = RobertaTokenizer.from_pretrained(model_name)
 
@@ -24,7 +24,7 @@ class CodeSummaryController:
         #################################################
         # start = time.time()
         model = T5ForConditionalGeneration.from_pretrained(model_name)
-        # model.to(device)
+        model.to(device)
         input_ids = tokenizer(text, return_tensors="pt").input_ids
         generated_ids = model.generate(input_ids, max_length=20)
         result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)

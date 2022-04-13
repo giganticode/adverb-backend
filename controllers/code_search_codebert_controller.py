@@ -26,11 +26,11 @@ class CodeSearchCodeBertController:
         pad_token = 0
         pad_token_segment_id = 0
 
-        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
         config = RobertaConfig.from_pretrained("microsoft/codebert-base", num_labels=2, finetuning_task="codesearch")
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaForSequenceClassification.from_pretrained("microsoft/codebert-base", config=config)
-        # model.to(device)
+        model.to(device)
 
         features = []
         lines = content.splitlines()
@@ -82,7 +82,7 @@ class CodeSearchCodeBertController:
         out_label_ids = None
         for batch in tqdm(eval_dataloader, desc="Evaluating"):
             model.eval()
-            batch = tuple(t for t in batch) #t.to(device)
+            batch = tuple(t.to(device) for t in batch)
 
             with torch.no_grad():
                 inputs = {'input_ids': batch[0],
