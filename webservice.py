@@ -72,8 +72,8 @@ def search():
 @app.route("/api/search_index", methods = ["POST"])
 def search_index():
     try:
-        code_search_col_bert.index(request)
-        return "Success", "200"
+        if code_search_col_bert.indexing(request) != None:
+            return "Success", "200"
     except Exception as e:
         print(str(e))
         traceback.print_exc()

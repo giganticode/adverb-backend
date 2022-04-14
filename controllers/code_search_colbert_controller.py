@@ -8,9 +8,7 @@ import torch
 
 class CodeSearchColBertController:
 
-    def index(self, request: Request):
-        print(request)
-        print(request.data)
+    def indexing(self, request: Request):
         if not request.data:
             return None
 
@@ -24,7 +22,7 @@ class CodeSearchColBertController:
 
         # collection = Collection(path="C:\\adverb-backend\\controllers\\downloads\\lotte\\science\\dev\\collection - Kopie.tsv")
 
-        checkpoint = os.path.join(os.path.dirname(__file__), "..", "models", "colbertv2.0")
+        checkpoint = os.path.join("..", "models", "colbertv2.0")
         print(checkpoint)
         nbits = 2   # encode each dimension with 2 bits
         doc_maxlen = 300   # truncate passages at 300 tokens
