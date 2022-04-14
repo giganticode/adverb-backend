@@ -4,6 +4,7 @@ from flask.wrappers import Request
 from colbert.infra import Run, RunConfig, ColBERTConfig
 from colbert.data import Queries, Collection
 from colbert import Indexer, Searcher
+import torch
 
 class CodeSearchColBertController:
 
@@ -25,7 +26,8 @@ class CodeSearchColBertController:
         print(checkpoint)
         nbits = 2   # encode each dimension with 2 bits
         doc_maxlen = 300   # truncate passages at 300 tokens
-        with Run().context(RunConfig(nranks=4)):
+        nranks = 1 if torch.cuda.is_available() else 0 # number of gpu's to use
+        with Run().context(RunConfig(nranks=nranks)):
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
             print("step 1")
             indexer = Indexer(checkpoint=checkpoint, config=config)
