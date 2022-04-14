@@ -16,7 +16,7 @@ dependencies:
   - pip=21.0
   - pip:
     - "--editable=git+https://github.com/stanford-futuredata/ColBERT.git@fast_search#egg=colbert"
-    - cupy-cuda110
+    - cupy-cuda102
     - bitarray
     - gitpython
     - scipy
