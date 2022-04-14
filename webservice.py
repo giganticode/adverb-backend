@@ -6,6 +6,7 @@ tf_device='/gpu:0'
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src", "colbert", "colbert"))
 
+import traceback
 import argparse
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -64,6 +65,7 @@ def search():
             return response
     except Exception as e:
         print(str(e))
+        traceback.print_exc()
         pass
     return "Bad request", "400"
 
@@ -74,6 +76,7 @@ def search_index():
         return "Success", "200"
     except Exception as e:
         print(str(e))
+        traceback.print_exc()
         pass
     return "Bad request", "400"
 
