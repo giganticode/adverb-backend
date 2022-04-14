@@ -5,12 +5,8 @@
 ## Quick start
 
 ### Prerequirements
-Python version >= 3.6 required.
-Download and install Python from the official website https://www.python.org/downloads/
-
-Rust required.
-Download and install Rust from the official website https://www.rust-lang.org/tools/install
-
+Anaconda required.
+Download and install Anaconda from the official website https://docs.anaconda.com/anaconda/install/index.html
 
 ### Installation
 
@@ -20,29 +16,29 @@ git clone https://github.com/giganticode/adverb-backend.git
 ```
 
 #### Windows
-Run the 'install_and_run.bat'-Script - it will install all dependencies and start the webservice.
+Run the 'install_and_run.bat'-Script - it will create a virtual conda environment called 'adverb', install all dependencies and start the webservice.
 ```
 cd adverb-backend
 .\install_and_run.bat
 ```
 
 #### Unix
-Run the 'install_and_run.sh'-Script - it will install all dependencies and start the webservice.
+Run the 'install_and_run.sh'-Script - it will create a virtual conda environment called 'adverb', install all dependencies and start the webservice.
 ```
 cd adverb-backend
 sh install_and_run.sh
 ```
 
 ### Manual installation
-#### Windows only
-Install PyTorch
+
+#### Create conda environment 'adverb'
 ```
-pip3 install torch==1.10.0+cu102 torchvision==0.11.1+cu102 torchaudio===0.10.0+cu102 -f https://download.pytorch.org/whl/cu102/torch_stable.html
+conda env create -f environment.yml
 ```
 
-#### Install python dependencies
+#### Activate the conda environment
 ```
-pip install -r requirements.txt
+conda activate adverb
 ```
 
 ### Start the webservice
@@ -63,5 +59,3 @@ Optional parameters:
 run the run.bat-script (Windows) or the run.sh-script (UNIX)
 
 Running this script will start the webservice.
-
-Note: on Windows you have to install PyTorch (See section 'Windows only')
