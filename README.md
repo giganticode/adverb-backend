@@ -10,52 +10,56 @@ Download and install Anaconda from the official website https://docs.anaconda.co
 
 ### Installation
 
-Clone the project
+#### Clone the project
 ```
 git clone https://github.com/giganticode/adverb-backend.git
 ```
 
-#### Windows
-Run the 'install_and_run.bat'-Script - it will create a virtual conda environment called 'adverb', install all dependencies and start the webservice.
-```
-cd adverb-backend
-.\install_and_run.bat
-```
-
-#### Unix
-Run the 'install_and_run.sh'-Script - it will create a virtual conda environment called 'adverb', install all dependencies and start the webservice.
-```
-cd adverb-backend
-sh install_and_run.sh
-```
-
-### Manual installation
-
 #### Create conda environment 'adverb'
+For GPU-use:
 ```
-conda env create -f environment.yml
+conda env create -f conda_env.yml
+```
+For CPU-use:
+```
+conda env create -f conda_env_cpu.yml
 ```
 
 #### Activate the conda environment
+For GPU-use:
 ```
 conda activate adverb
 ```
+For CPU-use:
+```
+conda activate adverb-cpu
+```
 
-### Start the webservice
+### Manually start the webservice
 ```
 python webservice.py 
 ```
 
 Optional parameters:
 
---port=8080 => Set the port of the webservice (default 8080)
+--port=8090 => Set the port of the webservice (default 8090)
 
---host=127.0.0.1 => Set the host of the webservice (default 127.0.0.1 )
+--host=127.0.0.1 => Set the host of the webservice (default 0.0.0.0)
 
 --debug => Enable the debug mode (default false)
 
 
-#### Start the webservice with the provided script
-run the run.bat-script (Windows) or the run.sh-script (UNIX)
+### Start the webservice with the provided script
+Running the following script will start the webservice.
+Windows
+```
+run.bat
+``` 
+Unix
+``` 
+run.sh
+``` 
 
-Running this script will start the webservice.
+## CPU execution
+
+Install the conda environment from the `conda_env_cpu.yml` file. In addition, note that if you are testing CPU execution on a machine that includes GPUs you might need to specify CUDA_VISIBLE_DEVICES="" as part of your command.

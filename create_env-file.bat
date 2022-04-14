@@ -1,1 +1,0 @@
-conda env export --from-history --no-build --name adverb | findstr -v "prefix" > environment.yml

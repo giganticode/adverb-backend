@@ -1,9 +1,0 @@
-name: adverb
-channels:
-  - defaults
-dependencies:
-  - flask
-  - flask-cors
-  - transformers
-  - tqdm
-  - pytorch

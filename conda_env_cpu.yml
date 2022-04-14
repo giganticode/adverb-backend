@@ -1,0 +1,20 @@
+name: adverb-cpu
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - flask
+  - flask-cors
+  - pytorch-cpu
+  - pip=21.0
+  - pip:
+    - "--editable=git+https://github.com/stanford-futuredata/ColBERT.git@fast_search#egg=colbert"
+    - bitarray
+    - gitpython
+    - scipy
+    - spacy
+    - tqdm
+    - transformers==4.10.0
+    - ujson

@@ -1,0 +1,25 @@
+name: adverb
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - cudatoolkit=11.1
+  - faiss-gpu=1.7.0
+  - flask
+  - flask-cors
+  - pytorch=1.9.0
+  - torchaudio
+  - torchvision
+  - pip=21.0
+  - pip:
+    - "--editable=git+https://github.com/stanford-futuredata/ColBERT.git@fast_search#egg=colbert"
+    - bitarray
+    - gitpython
+    - scipy
+    - spacy
+    - tqdm
+    - transformers==4.10.0
+    - ujson
