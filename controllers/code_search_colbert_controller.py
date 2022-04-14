@@ -9,6 +9,8 @@ import torch
 class CodeSearchColBertController:
 
     def index(self, request: Request):
+        print(request)
+        print(request.data)
         if not request.data:
             return None
 
