@@ -37,7 +37,7 @@ class CodeSummaryController:
         ### FASTT5-APPROACH: NOT FASTER; MUCH SLOWER ###
         ################################################
         # start = time.time()
-        # output_path = "models/"
+        # output_path = "models/codet5/"
         # try:
         #     model = get_onnx_model(model_name, onnx_models_path=output_path)
         # except:

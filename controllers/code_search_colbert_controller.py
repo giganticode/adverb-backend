@@ -16,24 +16,20 @@ class CodeSearchColBertController:
         content = data.get("content", "")
         index_name = data.get("index_name", "")
 
-        print("step")
         data = list(map(lambda x: x["content"], list(content.values())))
         collection = Collection(data=content)
 
         # collection = Collection(path="C:\\adverb-backend\\controllers\\downloads\\lotte\\science\\dev\\collection - Kopie.tsv")
 
-        checkpoint = os.path.join("..", "models", "colbertv2.0")
-        print(checkpoint)
+        checkpoint = os.path.join(os.path.dirname(__file__), "..", "models", "colbertv2.0")
         nbits = 2   # encode each dimension with 2 bits
         doc_maxlen = 300   # truncate passages at 300 tokens
         nranks = 1 if torch.cuda.is_available() else 0 # number of gpu's to use
         with Run().context(RunConfig(nranks=nranks)):
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
-            print("step 1")
+            config.local_files_only = True
             indexer = Indexer(checkpoint=checkpoint, config=config)
-            print("step 2")
             indexer.index(name=index_name, collection=collection, overwrite=True)
-            print("step 3")
             print(indexer.get_index())
         
         return ""
