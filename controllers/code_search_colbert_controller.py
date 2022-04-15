@@ -24,26 +24,9 @@ class CodeSearchColBertController:
             file_content = str(content[key]["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                # id = int(content[key]["id"])
-                # data[id] = file_content
                 data.append(file_content)
+        
         collection = Collection(data=data)
-        # collection = Collection(path=os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection.tsv"))
-
-        # path = os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection_adverb.tsv")
-        # if os.path.exists(path):
-        #     os.remove(path)
-
-        # with open(path, "a", encoding="utf-8") as file:
-        #     for key in content:
-        #         file_content = str(content[key]["content"])
-        #         if file_content:
-        #             file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-        #             line = str(content[key]["id"]) + "\t" + file_content + "\n"
-        #             file.write(line)
-
-        # collection = Collection(path=path)
-
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
 
         nbits = 2   # encode each dimension with 2 bits
@@ -54,7 +37,7 @@ class CodeSearchColBertController:
             config.local_files_only = True
             indexer = Indexer(checkpoint=checkpoint, config=config)
             indexer.index(name=index_name, collection=collection, overwrite=True)
-            print(indexer.get_index())
+            # print(indexer.get_index())
         
         return ""
 
