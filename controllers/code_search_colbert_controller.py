@@ -16,10 +16,26 @@ class CodeSearchColBertController:
         content = data.get("content", "")
         index_name = data.get("index_name", "")
 
+        if content:
+            content = json.loads(str(content))
+
         # data = list(map(lambda x: x["content"], list(content.values())))
         # collection = Collection(data=content)
-        collection = Collection(path=os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection.tsv"))
+        # collection = Collection(path=os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection.tsv"))
 
+        path = os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection_adverb.tsv")
+        if os.path.exists(path):
+            os.remove(path)
+
+        with open(path, "a", encoding="utf-8") as file:
+            for key in content:
+                file_content = str(content[key]["content"])
+                if file_content:
+                    file_content = file_content.replace("\r\n", " ").replace("\n", " ")
+                    line = content[key]["name"] + "\t" + file_content
+                    file.write(line)
+
+        collection = Collection(path=path)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
 
         nbits = 2   # encode each dimension with 2 bits
