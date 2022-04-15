@@ -19,23 +19,30 @@ class CodeSearchColBertController:
         if content:
             content = json.loads(str(content))
 
-        # data = list(map(lambda x: x["content"], list(content.values())))
-        # collection = Collection(data=content)
+        data = {}
+        for key in content:
+            file_content = str(content[key]["content"])
+            if file_content:
+                file_content = file_content.replace("\r\n", " ").replace("\n", " ")
+                id = int(content[key]["id"])
+                data[id] = file_content
+        collection = Collection(data=data)
         # collection = Collection(path=os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection.tsv"))
 
-        path = os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection_adverb.tsv")
-        if os.path.exists(path):
-            os.remove(path)
+        # path = os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection_adverb.tsv")
+        # if os.path.exists(path):
+        #     os.remove(path)
 
-        with open(path, "a", encoding="utf-8") as file:
-            for key in content:
-                file_content = str(content[key]["content"])
-                if file_content:
-                    file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                    line = str(content[key]["id"]) + "\t" + file_content + "\n"
-                    file.write(line)
+        # with open(path, "a", encoding="utf-8") as file:
+        #     for key in content:
+        #         file_content = str(content[key]["content"])
+        #         if file_content:
+        #             file_content = file_content.replace("\r\n", " ").replace("\n", " ")
+        #             line = str(content[key]["id"]) + "\t" + file_content + "\n"
+        #             file.write(line)
 
-        collection = Collection(path=path)
+        # collection = Collection(path=path)
+
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
 
         nbits = 2   # encode each dimension with 2 bits
