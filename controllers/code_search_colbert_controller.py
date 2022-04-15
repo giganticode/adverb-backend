@@ -32,7 +32,7 @@ class CodeSearchColBertController:
                 file_content = str(content[key]["content"])
                 if file_content:
                     file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                    line = str(content[key]["id"]) + "\t" + file_content
+                    line = str(content[key]["id"]) + "\t" + file_content + "\n"
                     file.write(line)
 
         collection = Collection(path=path)
