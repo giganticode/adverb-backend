@@ -19,13 +19,14 @@ class CodeSearchColBertController:
         if content:
             content = json.loads(str(content))
 
-        data = {}
+        data = []
         for key in content:
             file_content = str(content[key]["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                id = int(content[key]["id"])
-                data[id] = file_content
+                # id = int(content[key]["id"])
+                # data[id] = file_content
+                data.append(file_content)
         collection = Collection(data=data)
         # collection = Collection(path=os.path.join(os.getcwd(), "downloads", "lotte", "lifestyle", "dev", "collection.tsv"))
 
