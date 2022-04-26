@@ -55,8 +55,7 @@ class CodeSearchColBertController:
             items = list(content.values())
             for passage_id, passage_rank, passage_score in zip(*results):
                 item = items[passage_id]
-                print(str(item))
-                return_values.append({"index": item.relativePath, "match": 0, "batch_size": item.lines, "rank": passage_rank, "score": passage_score})
+                return_values.append({"index": item["relativePath"], "match": 0, "batch_size": item["lines"], "rank": passage_rank, "score": passage_score})
         return return_values
 
     def convert_json_to_collection(self, content):
