@@ -15,18 +15,8 @@ class CodeSearchColBertController:
         data = json.loads(request.data)
         content = data.get("content", "")
         index_name = data.get("index_name", "")
-
-        if content:
-            content = json.loads(str(content))
-
-        data = []
-        for key in content:
-            file_content = str(content[key]["content"])
-            if file_content:
-                file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                data.append(file_content)
-        
-        collection = Collection(data=data)
+       
+        collection = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
 
         nbits = 2   # encode each dimension with 2 bits
@@ -41,17 +31,19 @@ class CodeSearchColBertController:
         
         return ""
 
-
     def search_for_text(self, request: Request):
         if not request.data:
             return None
 
         data = json.loads(request.data)
         query = data.get("search", "")
+        content = data.get("content", "")
         index_name = data.get("index_name", "")
+
+        collection = self.convert_json_to_collection(content)
         
         with Run().context(RunConfig()):
-            searcher = Searcher(index=index_name)
+            searcher = Searcher(index=index_name, collection=collection)
 
         results = searcher.search(query, k=3)
         
@@ -59,3 +51,17 @@ class CodeSearchColBertController:
         for passage_id, passage_rank, passage_score in zip(*results):
             return_values.append({"id": passage_id, "rank": passage_rank, "score": passage_score})
         return return_values
+
+    def convert_json_to_collection(self, content):
+        if content:
+            content = json.loads(str(content))
+
+        data = []
+        for key in content:
+            file_content = str(content[key]["content"])
+            if file_content:
+                file_content = file_content.replace("\r\n", " ").replace("\n", " ")
+                data.append(file_content)
+        
+        collection = Collection(data=data)
+        return collection
