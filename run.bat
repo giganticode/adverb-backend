@@ -1,1 +1,1 @@
-set CUDA_VISIBLE_DEVICES=3 & python webservice.py
+set CUDA_VISIBLE_DEVICES=0 & python webservice.py
