@@ -41,15 +41,18 @@ class CodeSearchColBertController:
         index_name = data.get("index_name", "")
 
         collection = self.convert_json_to_collection(content)
+        checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
         
         with Run().context(RunConfig()):
-            searcher = Searcher(index=index_name, collection=collection)
+            searcher = Searcher(index=index_name, checkpoint=checkpoint, collection=collection)
 
-        results = searcher.search(query, k=3)
+        results = searcher.search(query, k=5)
         
         return_values = []
-        for passage_id, passage_rank, passage_score in zip(*results):
-            return_values.append({"id": passage_id, "rank": passage_rank, "score": passage_score})
+        if content:
+            content = json.loads(str(content))
+            for passage_id, passage_rank, passage_score in zip(*results):
+                return_values.append({"index": content[passage_id]["relativePath"], "match": 0, "batch_size": content[passage_id]["lines"], "rank": passage_rank, "score": passage_score})
         return return_values
 
     def convert_json_to_collection(self, content):
