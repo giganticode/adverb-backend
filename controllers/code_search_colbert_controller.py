@@ -61,6 +61,7 @@ class CodeSearchColBertController:
 
         data = []
         for key in content:
+            print(key)
             file_content = str(content[key]["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
