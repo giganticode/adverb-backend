@@ -25,7 +25,8 @@ class CodeSearchColBertController:
         with Run().context(RunConfig(nranks=nranks)):
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
             config.local_files_only = True  # use local indexer checkpoint
-            indexer = Indexer(checkpoint=checkpoint, config=config)
+            config.overwrite = True
+            indexer = Indexer(checkpoint=checkpoint, config=config, )
             indexer.index(name=index_name, collection=collection, overwrite=True)
             # print(indexer.get_index())
         
@@ -61,7 +62,7 @@ class CodeSearchColBertController:
 
         data = []
         for key in content:
-            print(key)
+            print(str(key))
             file_content = str(content[key]["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
