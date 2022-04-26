@@ -34,7 +34,7 @@ class CodeSearchColBertController:
         nranks = 1 if torch.cuda.is_available() else 0 # number of gpu's to use
         with Run().context(RunConfig(nranks=nranks)):
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
-            config.local_files_only = True
+            config.local_files_only = True  # use local indexer checkpoint
             indexer = Indexer(checkpoint=checkpoint, config=config)
             indexer.index(name=index_name, collection=collection, overwrite=True)
             # print(indexer.get_index())
@@ -50,9 +50,12 @@ class CodeSearchColBertController:
         query = data.get("search", "")
         index_name = data.get("index_name", "")
         
-        # with Run().context(RunConfig(experiment='notebook')):
-        #     searcher = Searcher(index=index_name)
+        with Run().context(RunConfig(experiment='notebook')):
+            searcher = Searcher(index=index_name)
 
-        # results = searcher.search(query, k=3)
+        results = searcher.search(query, k=3)
         
-        return ""
+        return_values = []
+        for passage_id, passage_rank, passage_score in zip(*results):
+            return_values.append({"id": passage_id, "rank": passage_rank, "score": passage_score})
+        return return_values
