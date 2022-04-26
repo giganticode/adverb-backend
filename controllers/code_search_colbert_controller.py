@@ -52,6 +52,11 @@ class CodeSearchColBertController:
         return_values = []
         if content:
             content = json.loads(str(content))
+            
+            print(content)
+            print(type(content))
+            print(str(content))
+
             items = content.items()
             for passage_id, passage_rank, passage_score in zip(*results):
                 item = items[passage_id]
