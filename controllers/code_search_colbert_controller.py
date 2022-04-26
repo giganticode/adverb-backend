@@ -52,8 +52,10 @@ class CodeSearchColBertController:
         return_values = []
         if content:
             content = json.loads(str(content))
+            print(enumerate(content))
             for passage_id, passage_rank, passage_score in zip(*results):
-                return_values.append({"index": content[passage_id]["relativePath"], "match": 0, "batch_size": content[passage_id]["lines"], "rank": passage_rank, "score": passage_score})
+                item = enumerate(content)[passage_id]
+                return_values.append({"index": item["relativePath"], "match": 0, "batch_size": item["lines"], "rank": passage_rank, "score": passage_score})
         return return_values
 
     def convert_json_to_collection(self, content):
@@ -62,7 +64,6 @@ class CodeSearchColBertController:
 
         data = []
         for key in content:
-            print(str(key))
             file_content = str(content[key]["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
