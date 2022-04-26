@@ -50,7 +50,7 @@ class CodeSearchColBertController:
         query = data.get("search", "")
         index_name = data.get("index_name", "")
         
-        with Run().context(RunConfig(experiment='notebook')):
+        with Run().context(RunConfig()):
             searcher = Searcher(index=index_name)
 
         results = searcher.search(query, k=3)
