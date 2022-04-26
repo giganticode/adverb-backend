@@ -55,7 +55,6 @@ class CodeSearchColBertController:
             
             print(content)
             print(type(content))
-            print(str(content))
 
             items = content.items()
             for passage_id, passage_rank, passage_score in zip(*results):
