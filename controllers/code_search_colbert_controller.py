@@ -52,9 +52,8 @@ class CodeSearchColBertController:
         return_values = []
         if content:
             content = json.loads(str(content))
-            print(enumerate(content))
             for passage_id, passage_rank, passage_score in zip(*results):
-                item = enumerate(content)[passage_id]
+                item = list(content)[passage_id]
                 return_values.append({"index": item["relativePath"], "match": 0, "batch_size": item["lines"], "rank": passage_rank, "score": passage_score})
         return return_values
 
