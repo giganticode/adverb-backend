@@ -27,10 +27,11 @@ class CodeSearchCodeBertController:
 
 
     def new_search_implementation(self, content, search_text, batch_size):
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
-        print("hallo")
-        query_vec = model(tokenizer(search_text, return_tensors='pt')['input_ids'])[1]
+        model.to(device)
+        query_vec = model(tokenizer(search_text, return_tensors="pt").to(device).input_ids)[1]
         codes = []
         tensors = []
         lines = content.splitlines()
@@ -39,15 +40,16 @@ class CodeSearchCodeBertController:
             code = lines[i : (i + batch_size)]
             code = "\n".join(code)
             codes.append(code)
-            code_vec =  model(tokenizer(code,return_tensors='pt')['input_ids'])[1]
+            code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
+            i += (batch_size + 1)
         code_vecs = torch.cat(tensors, 0)
         scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
         scores = torch.softmax(scores, -1)
         print("Query:", search_text)
         for i in range(codes.length):
             print("Code:", codes[i])
-            print("Score:", scores[0,i].item())
+            print("Score:", scores[0, i].item())
 
         return { "result": {"search_text": search_text, "search_lines": [], "batch_size": batch_size} }
         
