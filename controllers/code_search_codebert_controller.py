@@ -25,10 +25,10 @@ class CodeSearchCodeBertController:
             return self.old_search_implementation(content, search_text, batch_size)
 
 
-    def new_search_implementeation(self, content, search_text, batch_size):
+    def new_search_implementation(self, content, search_text, batch_size):
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained("../models/codebert-base")
-
+        print("hallo")
         query_vec = model(tokenizer(search_text, return_tensors='pt')['input_ids'])[1]
         codes = []
         tensors = []
