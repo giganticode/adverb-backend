@@ -42,6 +42,7 @@ class CodeSearchCodeBertController:
         while i < len(lines):
             code = lines[i : (i + batch_size)]
             code = "\n".join(code)
+            code = code[:200]
             codes.append(code)
             code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
@@ -58,7 +59,7 @@ class CodeSearchCodeBertController:
             line = i * batch_size
             # print("Code:", codes[i])
             print("Score:", score)
-            if score > 5:
+            if score > 0.75:
                 search_lines.append(line)
 
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
