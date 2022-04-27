@@ -46,12 +46,18 @@ class CodeSearchCodeBertController:
         code_vecs = torch.cat(tensors, 0)
         scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
         scores = torch.softmax(scores, -1)
-        print("Query:", search_text)
+        
+        # print("Query:", search_text)
+        search_lines = []
         for i in range(len(codes)):
-            print("Code:", codes[i])
-            print("Score:", scores[0, i].item())
+            score = scores[0, i].item()
+            line = i * batch_size
+            # print("Code:", codes[i])
+            # print("Score:", score)
+            if score > 30:
+                search_lines.append(line)
 
-        return { "result": {"search_text": search_text, "search_lines": [], "batch_size": batch_size} }
+        return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
         
     def old_search_implementation(self, content, search_text, batch_size):
         max_seq_length = 200
