@@ -50,24 +50,27 @@ class CodeSearchColBertController:
         results = searcher.search(query, k=5)
         
         return_values = []
-        if content:
-            content = json.loads(str(content))
-            items = list(content.values())
-            for passage_id, passage_rank, passage_score in zip(*results):
-                item = items[passage_id]
-                return_values.append({"index": passage_id, "match": [0], "batch_size": item["lines"], "rank": passage_rank, "score": passage_score})
+        for passage_id, passage_rank, passage_score in zip(*results):
+            return_values.append({"index": passage_id, "match": [0], "rank": passage_rank, "score": passage_score})
         return return_values
 
     def convert_json_to_collection(self, content):
         if content:
             content = json.loads(str(content))
 
+        # data = []
+        # for key in content:
+        #     file_content = str(content[key]["content"])
+        #     if file_content:
+        #         file_content = file_content.replace("\r\n", " ").replace("\n", " ")
+        #         data.append(file_content)
+        
         data = []
-        for key in content:
-            file_content = str(content[key]["content"])
+        for item in content:
+            file_content = str(item["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
                 data.append(file_content)
-        
+
         collection = Collection(data=data)
         return collection
