@@ -13,7 +13,7 @@ from flask_cors import CORS
 
 from controllers.code_summary_controller import CodeSummaryController
 from controllers.code_symbol_controller import CodeSymbolController
-# from controllers.code_search_codebert_controller import CodeSearchCodeBertController
+from controllers.code_search_codebert_controller import CodeSearchCodeBertController
 from controllers.code_search_colbert_controller import CodeSearchColBertController
 
 DEBUG = True
@@ -26,7 +26,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 # controllers
 code_summary = CodeSummaryController()
 code_symbol = CodeSymbolController()
-# code_search_code_bert = CodeSearchCodeBertController()
+code_search_code_bert = CodeSearchCodeBertController()
 code_search_col_bert = CodeSearchColBertController()
 
 # API routes
@@ -57,8 +57,8 @@ def get_symbol_name():
 @app.route("/api/search", methods = ["POST"])
 def search():
     try:
-        # search_result = code_search_code_bert.search_for_text(request)
-        search_result = code_search_col_bert.search_for_text(request)
+        search_result = code_search_code_bert.search_for_text(request)
+        # search_result = code_search_col_bert.search_for_text(request)
         if search_result:
             response = jsonify(search_result)
             response.headers.add("Access-Control-Allow-Origin", "*")
@@ -72,8 +72,8 @@ def search():
 @app.route("/api/search_index", methods = ["POST"])
 def search_index():
     try:
-        if code_search_col_bert.indexing(request) != None:
-            return "Success", "200"
+        #if code_search_col_bert.indexing(request) != None:
+        return "Success", "200"
     except Exception as e:
         print(str(e))
         traceback.print_exc()
