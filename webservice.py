@@ -57,8 +57,13 @@ def get_symbol_name():
 @app.route("/api/search", methods = ["POST"])
 def search():
     try:
-        search_result = code_search_code_bert.search_for_text(request)
-        # search_result = code_search_col_bert.search_for_text(request)
+        search_result = None
+        if request.data:
+            model = request.data.get("model", "colBERT")
+            if model == "colBERT":
+                code_search_code_bert.search_for_text(request)
+            else:
+                search_result = code_search_col_bert.search_for_text(request)
         if search_result:
             response = jsonify(search_result)
             response.headers.add("Access-Control-Allow-Origin", "*")
@@ -72,8 +77,8 @@ def search():
 @app.route("/api/search_index", methods = ["POST"])
 def search_index():
     try:
-        #if code_search_col_bert.indexing(request) != None:
-        return "Success", "200"
+        if code_search_col_bert.indexing(request) != None:
+            return "Success", "200"
     except Exception as e:
         print(str(e))
         traceback.print_exc()

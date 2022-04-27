@@ -105,7 +105,7 @@ class CodeSearchCodeBertController:
 
         eval_loss = eval_loss / nb_eval_steps
         # preds_label = np.argmax(preds, axis=1)
-        print(np.min(list(map(lambda x: x[1], preds))), np.max(list(map(lambda x: x[1], preds))))
+        # print(np.min(list(map(lambda x: x[1], preds))), np.max(list(map(lambda x: x[1], preds))))
         preds_label = list(map(lambda x: 1 if x[1] > 0.2 else 0, preds))
         # all_logits = preds.tolist()
 
