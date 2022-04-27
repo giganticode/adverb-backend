@@ -2,7 +2,7 @@ import os
 from flask import json
 from flask.wrappers import Request
 from colbert.infra import Run, RunConfig, ColBERTConfig
-from colbert.data import Queries, Collection
+from colbert.data import Collection
 from colbert import Indexer, Searcher
 import torch
 
@@ -55,16 +55,6 @@ class CodeSearchColBertController:
         return return_values
 
     def convert_json_to_collection(self, content):
-        if content:
-            content = json.loads(str(content))
-
-        # data = []
-        # for key in content:
-        #     file_content = str(content[key]["content"])
-        #     if file_content:
-        #         file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-        #         data.append(file_content)
-        
         data = []
         for item in content:
             file_content = str(item["content"])
