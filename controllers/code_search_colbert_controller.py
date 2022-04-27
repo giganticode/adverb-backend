@@ -14,7 +14,9 @@ class CodeSearchColBertController:
 
         data = json.loads(request.data)
         content = data.get("content", "")
-        index_name = data.get("index_name", "")
+        index_name = data.get("index_name", "adverb")
+        if not content:
+            return None
        
         collection = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
@@ -39,7 +41,9 @@ class CodeSearchColBertController:
         data = json.loads(request.data)
         query = data.get("search", "")
         content = data.get("content", "")
-        index_name = data.get("index_name", "")
+        index_name = data.get("index_name", "adverb")
+        if not query or not content:
+            return None
 
         collection = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
@@ -55,6 +59,7 @@ class CodeSearchColBertController:
         return return_values
 
     def convert_json_to_collection(self, content):
+        content = json.loads(str(content))
         data = []
         for item in content:
             file_content = str(item["content"])
