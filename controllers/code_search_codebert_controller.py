@@ -47,7 +47,7 @@ class CodeSearchCodeBertController:
             tensors.append(code_vec)
             i += (batch_size + 1)
 
-        code_vecs = torch.cat(tensors, 0)
+        #code_vecs = torch.cat(tensors, 0)
         #scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
         #scores = torch.softmax(scores, -1)
         
