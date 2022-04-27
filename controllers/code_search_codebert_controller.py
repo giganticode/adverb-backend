@@ -45,10 +45,10 @@ class CodeSearchCodeBertController:
             code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
             i += (batch_size + 1)
-        # with torch.no_grad():
-        code_vecs = torch.cat(tensors, 0)
-        scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
-        scores = torch.softmax(scores, -1)
+        with torch.no_grad():
+            code_vecs = torch.cat(tensors, 0)
+            scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
+            scores = torch.softmax(scores, -1)
         
         # print("Query:", search_text)
         search_lines = []
