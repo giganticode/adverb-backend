@@ -1,3 +1,4 @@
+import os
 from flask import json
 from flask.wrappers import Request
 import torch
@@ -27,7 +28,7 @@ class CodeSearchCodeBertController:
 
     def new_search_implementation(self, content, search_text, batch_size):
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
-        model = RobertaModel.from_pretrained("../models/codebert-base")
+        model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
         print("hallo")
         query_vec = model(tokenizer(search_text, return_tensors='pt')['input_ids'])[1]
         codes = []
