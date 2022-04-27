@@ -27,10 +27,10 @@ class CodeSearchCodeBertController:
 
 
     def new_search_implementation(self, content, search_text, batch_size):
-        # device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
-        # model.to(device)
+        model.to(device)
         query_vec = model(tokenizer(search_text, return_tensors="pt").input_ids)[1]
         codes = []
         tensors = []
@@ -54,7 +54,7 @@ class CodeSearchCodeBertController:
             line = i * batch_size
             # print("Code:", codes[i])
             # print("Score:", score)
-            if score > 30:
+            if score > 15:
                 search_lines.append(line)
 
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
