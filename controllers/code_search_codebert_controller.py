@@ -2,7 +2,7 @@ from flask import json
 from flask.wrappers import Request
 import torch
 from torch.utils.data import DataLoader, TensorDataset, SequentialSampler
-from transformers import RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification
+from transformers import RobertaConfig, RobertaModel, RobertaTokenizer, RobertaForSequenceClassification
 import numpy as np
 from tqdm import tqdm
 
@@ -18,7 +18,39 @@ class CodeSearchCodeBertController:
         batch_size = data.get("batch_size", 8)
         if not content or not search_text:
             return None
+
+        if True:
+            return self.new_search_implementation(content, search_text, batch_size)
+        else:
+            return self.old_search_implementation(content, search_text, batch_size)
+
+
+    def new_search_implementeation(self, content, search_text, batch_size):
+        tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
+        model = RobertaModel.from_pretrained("../models/codebert-base")
+
+        query_vec = model(tokenizer(search_text, return_tensors='pt')['input_ids'])[1]
+        codes = []
+        tensors = []
+        lines = content.splitlines()
+        i = 0
+        while i < len(lines):
+            code = lines[i : (i + batch_size)]
+            code = "\n".join(code)
+            codes.append(code)
+            code_vec =  model(tokenizer(code,return_tensors='pt')['input_ids'])[1]
+            tensors.append(code_vec)
+        code_vecs = torch.cat(tensors, 0)
+        scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
+        scores = torch.softmax(scores, -1)
+        print("Query:", search_text)
+        for i in range(codes.length):
+            print("Code:", codes[i])
+            print("Score:", scores[0,i].item())
+
+        return { "result": {"search_text": search_text, "search_lines": [], "batch_size": batch_size} }
         
+    def old_search_implementation(self, content, search_text, batch_size):
         max_seq_length = 200
         sequence_a_segment_id = 0
         sequence_b_segment_id = 1
