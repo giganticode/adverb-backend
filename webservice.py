@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src", "colbert", "co
 
 import traceback
 import argparse
+from flask import json
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -59,11 +60,11 @@ def search():
     try:
         search_result = None
         if request.data:
-            model = request.data.get("model", "colBERT")
+            model = json.loads(request.data).get("model", "colBERT")
             if model == "colBERT":
-                code_search_code_bert.search_for_text(request)
-            else:
                 search_result = code_search_col_bert.search_for_text(request)
+            else:
+                search_result = code_search_code_bert.search_for_text(request)
         if search_result:
             response = jsonify(search_result)
             response.headers.add("Access-Control-Allow-Origin", "*")
