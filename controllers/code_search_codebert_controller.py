@@ -31,7 +31,7 @@ class CodeSearchCodeBertController:
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
         model.to(device)
-        query_vec = model(tokenizer(search_text, return_tensors="pt").input_ids)[1]
+        query_vec = model(tokenizer(search_text, return_tensors="pt").to(device).input_ids)[1]
         codes = []
         tensors = []
         lines = content.splitlines()
@@ -40,7 +40,7 @@ class CodeSearchCodeBertController:
             code = lines[i : (i + batch_size)]
             code = "\n".join(code)
             codes.append(code)
-            code_vec =  model(tokenizer(code, return_tensors="pt").input_ids)[1]
+            code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
             i += (batch_size + 1)
         code_vecs = torch.cat(tensors, 0)
