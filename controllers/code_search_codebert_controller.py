@@ -63,6 +63,7 @@ class CodeSearchCodeBertController:
         #         search_lines.append(line)
 
         score = scores[0, 0].item()
+        print("Score:", score)
         if score > 0.75:
             search_lines.append(0)
 
