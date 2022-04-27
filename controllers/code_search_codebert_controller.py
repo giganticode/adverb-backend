@@ -32,7 +32,7 @@ class CodeSearchCodeBertController:
         config.local_files_only = True
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         # model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), config=config)
-        model = RobertaForSequenceClassification.from_pretrained("microsoft/codebert-base", config=config)
+        model = RobertaModel.from_pretrained("microsoft/codebert-base", config=config)
         model.to(device)
         query_vec = model(tokenizer(search_text, return_tensors="pt").to(device).input_ids)[1]
         codes = []
