@@ -47,7 +47,7 @@ class CodeSearchCodeBertController:
         scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
         scores = torch.softmax(scores, -1)
         print("Query:", search_text)
-        for i in range(codes.length):
+        for i in range(len(codes)):
             print("Code:", codes[i])
             print("Score:", scores[0, i].item())
 
