@@ -45,7 +45,7 @@ class CodeSearchCodeBertController:
             tensors.append(code_vec[:514])
             i += (batch_size + 1)
 
-        code_vecs = torch.cat(tensors, 0)
+        code_vecs = torch.cat(tensors[:514], 0)
         scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
         scores = torch.softmax(scores, -1)
         
@@ -58,7 +58,7 @@ class CodeSearchCodeBertController:
             # print("Score:", score)
             if score > 0.75:
                 search_lines.append(line)
-                
+
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
         
     def old_search_implementation(self, content, search_text, batch_size):
