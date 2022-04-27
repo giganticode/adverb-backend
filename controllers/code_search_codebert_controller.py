@@ -35,31 +35,36 @@ class CodeSearchCodeBertController:
         model = RobertaModel.from_pretrained("microsoft/codebert-base", config=config)
         model.to(device)
         query_vec = model(tokenizer(search_text, return_tensors="pt").to(device).input_ids)[1]
-        codes = []
-        tensors = []
-        lines = content.splitlines()
-        i = 0
-        while i < len(lines):
-            code = lines[i : (i + batch_size)]
-            code = "\n".join(code)
-            #codes.append(code)
-            code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
-            #tensors.append(code_vec)
-            i += (batch_size + 1)
+        # codes = []
+        # tensors = []
+        # lines = content.splitlines()
+        # i = 0
+        # while i < len(lines):
+        #     code = lines[i : (i + batch_size)]
+        #     code = "\n".join(code)
+        #     codes.append(code)
+        #     code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
+        #     tensors.append(code_vec)
+        #     i += (batch_size + 1)
 
-        #code_vecs = torch.cat(tensors, 0)
-        #scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
-        #scores = torch.softmax(scores, -1)
+        # code_vecs = torch.cat(tensors, 0)
+        code_vecs = torch.cat((model(tokenizer(content, return_tensors="pt").to(device).input_ids)[1]), 0)
+        scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
+        scores = torch.softmax(scores, -1)
         
         # print("Query:", search_text)
         search_lines = []
-        for i in range(len(codes)):
-            #score = scores[0, i].item()
-            line = i * batch_size
-            # print("Code:", codes[i])
-            # print("Score:", score)
-            #if score > 0.75:
-            #    search_lines.append(line)
+        # for i in range(len(codes)):
+        #     score = scores[0, i].item()
+        #     line = i * batch_size
+        #     # print("Code:", codes[i])
+        #     # print("Score:", score)
+        #     if score > 0.75:
+        #         search_lines.append(line)
+
+        score = scores[0, 0].item()
+        if score > 0.75:
+            search_lines.append(0)
 
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
         
