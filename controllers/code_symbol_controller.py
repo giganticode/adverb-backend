@@ -13,6 +13,7 @@ class CodeSymbolController:
         text = data.get("content", "")
         if not text:
             return None
+        text = text[:512]
         
         model_type = data.get("modelType", 2)
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
