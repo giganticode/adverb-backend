@@ -16,8 +16,9 @@ class CodeSymbolController:
         
         model_type = data.get("modelType", 2)
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
-        
+       
         if model_type == 0:
+            print("Model:", "huggingface/CodeBERTa-small-v1")
             model = RobertaForMaskedLM.from_pretrained("huggingface/CodeBERTa-small-v1")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("huggingface/CodeBERTa-small-v1")
@@ -25,6 +26,7 @@ class CodeSymbolController:
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         elif model_type == 1:
+            print("Model:", "microsoft/codebert-base-mlm")
             model = RobertaForMaskedLM.from_pretrained("microsoft/codebert-base-mlm")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
@@ -32,6 +34,7 @@ class CodeSymbolController:
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         else:
+            print("Model:", "Salesforce/codet5-base")
             model = T5ForConditionalGeneration.from_pretrained("Salesforce/codet5-base")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("Salesforce/codet5-base")
@@ -39,5 +42,7 @@ class CodeSymbolController:
             input_ids = device_tokenizer.input_ids
             generated_ids = model.generate(input_ids, max_length=8)
             result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+        print("Code:", text)
+        print("Result:", result)
 
-        return {"result": result}
+        return { "result": result }
