@@ -25,23 +25,35 @@ class CodeSearchCodeBertController:
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
         model.to(device)
         # model = RobertaModel.from_pretrained("python_model")
-
+        
         query = search_text
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
-        code_1=content[:512]
-        code1_vec = model(tokenizer(code_1,return_tensors='pt').to(device).input_ids)[1]
+
+        content = json.loads(str(content))
+        codes = []
+        for item in content:
+            file_content = str(item["content"])
+            if file_content:
+                file_content = file_content.replace("\r\n", " ").replace("\n", " ")[:512]
+                codes.append(file_content)
+        
+        code_vecs = []
+        for c in codes:
+            code_vec = model(tokenizer(c,return_tensors='pt').to(device).input_ids)[1]
+            code_vecs.append(code_vec)
+        
         # code_2="s = 'hello world'"
         # code2_vec = model(tokenizer(code_2,return_tensors='pt').to(device).input_ids)[1]
         # code_3="hello world"
         # code3_vec = model(tokenizer(code_3,return_tensors='pt').to(device).input_ids)[1]
-        #code_vecs=torch.cat((code1_vec),0) #,code2_vec,code3_vec
-        codes = [code_1] #,code_2,code_3
-        scores=torch.einsum("ab,cb->ac",query_vec,code1_vec)
+        code_vecs1=torch.cat(code_vecs,0) #,code2_vec,code3_vec
+        #codes = [code_1] #,code_2,code_3
+        scores=torch.einsum("ab,cb->ac",query_vec,code_vecs1)
         scores=torch.softmax(scores,-1)
         print("Query:",query)
-        # for i in range(3):
-        print("Code:",codes[0])
-        print("Score:",scores[0,0].item())
+        for i in range(len(codes)):
+            print("Code:",i)
+            print("Score:",scores[0,i].item())
 
         return ""
 
