@@ -24,12 +24,9 @@ class CodeSearchCodeBertController:
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
         model.to(device)
-        # model = RobertaModel.from_pretrained("python_model")
         
         query = search_text
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
-
-        content = json.loads(str(content))
              
         codes = []
         tensors = []
