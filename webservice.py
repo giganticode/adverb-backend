@@ -11,7 +11,7 @@ import argparse
 from flask import json
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import utils.logging
+import controllers.printing
 
 from controllers.code_summary_controller import CodeSummaryController
 from controllers.code_symbol_controller import CodeSymbolController
@@ -102,6 +102,6 @@ if __name__ == "__main__":
     debug = args.debug
     host = args.host
 
-    utils.logging.debug = debug
+    controllers.printing.debug = debug
 
     app.run(use_reloader=debug, port=port, debug=debug, host=host)

@@ -1,4 +1,4 @@
-from utils.logging import log
+from printing import print_to_console
 from flask import json
 from flask.wrappers import Request
 import torch
@@ -20,7 +20,7 @@ class CodeSymbolController:
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
        
         if model_type == 0:
-            log("New symbol name - model:", "huggingface/CodeBERTa-small-v1")
+            print_to_console("New symbol name - model:", "huggingface/CodeBERTa-small-v1")
             model = RobertaForMaskedLM.from_pretrained("huggingface/CodeBERTa-small-v1")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("huggingface/CodeBERTa-small-v1")
@@ -28,7 +28,7 @@ class CodeSymbolController:
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         elif model_type == 1:
-            log("New symbol name - model:", "microsoft/codebert-base-mlm")
+            print_to_console("New symbol name - model:", "microsoft/codebert-base-mlm")
             model = RobertaForMaskedLM.from_pretrained("microsoft/codebert-base-mlm")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
@@ -36,7 +36,7 @@ class CodeSymbolController:
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         else:
-            log("New symbol name - model:", "Salesforce/codet5-base")
+            print_to_console("New symbol name - model:", "Salesforce/codet5-base")
             model = T5ForConditionalGeneration.from_pretrained("Salesforce/codet5-base")
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("Salesforce/codet5-base")
@@ -45,7 +45,7 @@ class CodeSymbolController:
             generated_ids = model.generate(input_ids, max_length=8)
             result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
-        log("New symbol name - code:", text)
-        log("New symbol name - result:", result)
+        print_to_console("New symbol name - code:", text)
+        print_to_console("New symbol name - result:", result)
 
         return { "result": result }

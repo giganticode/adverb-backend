@@ -1,4 +1,4 @@
-from utils.logging import log
+from printing import print_to_console
 import os 
 from flask import json
 from flask.wrappers import Request
@@ -31,7 +31,7 @@ class CodeSearchColBertController:
             config.overwrite = True
             indexer = Indexer(checkpoint=checkpoint, config=config, )
             indexer.index(name=index_name, collection=collection, overwrite=True)
-            # log(indexer.get_index())
+            # print_to_console(indexer.get_index())
         
         return ""
 
@@ -58,9 +58,9 @@ class CodeSearchColBertController:
         for passage_id, passage_rank, passage_score in zip(*results):
             return_values.append({"index": passage_id, "match": [0], "rank": passage_rank, "score": passage_score})
 
-        log("Search NL->PL - model:", "colbert")
-        log("Search NL->PL - query:", query)
-        log("Search NL->PL - result:", str(return_values))
+        print_to_console("Search NL->PL - model:", "colbert")
+        print_to_console("Search NL->PL - query:", query)
+        print_to_console("Search NL->PL - result:", str(return_values))
         
         return return_values
 

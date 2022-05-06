@@ -1,5 +1,5 @@
 debug = False
 
-def log(source, content):
+def print_to_console(source, content):
     if debug:
         print(source, content)
