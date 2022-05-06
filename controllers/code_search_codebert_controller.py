@@ -49,10 +49,8 @@ class CodeSearchCodeBertController:
             score = scores[0, i].item()
             line = i * batch_size
             print("Score:", score)
-            if score > 9:
+            if score > 0.9:
                 search_lines.append(line)
-
-        print(str(search_lines))
 
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
 
