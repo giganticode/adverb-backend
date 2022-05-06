@@ -2,6 +2,7 @@ from flask import json
 from flask.wrappers import Request
 import torch
 from transformers import RobertaTokenizer, T5ForConditionalGeneration
+from webservice import app
 # from fastT5 import export_and_get_onnx_model, get_onnx_model
 # import time
 
@@ -30,6 +31,12 @@ class CodeSummaryController:
         input_ids = device_tokenizer.input_ids
         generated_ids = model.generate(input_ids, max_length=20)
         result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+
+        if app.debug:
+            print("Summary - code:", text)
+        if app.debug:
+            print("Summary - result:", result)
+
         # latency = time.time() - start
         # print("Inference time = {} ms".format(latency * 1000, '.2f'))
         # print(result)
