@@ -17,8 +17,6 @@ from controllers.code_symbol_controller import CodeSymbolController
 from controllers.code_search_codebert_controller import CodeSearchCodeBertController
 from controllers.code_search_colbert_controller import CodeSearchColBertController
 
-import logging
-
 DEBUG = False
 PORT = 8090
 
@@ -99,7 +97,5 @@ if __name__ == "__main__":
     port = args.port
     debug = args.debug
     host = args.host
-
-    logging.debug = debug
 
     app.run(use_reloader=debug, port=port, debug=debug, host=host)

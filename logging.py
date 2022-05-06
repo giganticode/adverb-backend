@@ -1,4 +1,4 @@
-debug = False
+debug = True
 
 def log(*text):
     if debug:
