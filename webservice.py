@@ -1,4 +1,3 @@
-import logging
 import os 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
@@ -17,6 +16,8 @@ from controllers.code_summary_controller import CodeSummaryController
 from controllers.code_symbol_controller import CodeSymbolController
 from controllers.code_search_codebert_controller import CodeSearchCodeBertController
 from controllers.code_search_colbert_controller import CodeSearchColBertController
+
+import logging
 
 DEBUG = False
 PORT = 8090
