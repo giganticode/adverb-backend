@@ -59,6 +59,8 @@ class CodeSearchCodeBertController:
             if score > 0.75:
                 search_lines.append(line)
 
+        print(str(search_lines))
+
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
         
     def old_search_implementation(self, content, search_text, batch_size):
