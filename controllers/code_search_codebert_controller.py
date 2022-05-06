@@ -30,31 +30,27 @@ class CodeSearchCodeBertController:
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
 
         content = json.loads(str(content))
+             
         codes = []
-        for item in content:
-            file_content = str(item["content"])
-            if file_content:
-                file_content = file_content.replace("\r\n", " ").replace("\n", " ")[:512]
-                codes.append(file_content)
+        tensors = []
+        lines = content.splitlines()
+        while i < len(lines):
+            code = lines[i : (i + batch_size)]
+            code = "\n".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
+            codes.append(code)
+            print(code)
+            code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
+            tensors.append(code_vec)
+            i += (batch_size + 1)
+
         
-        code_vecs = []
-        for c in codes:
-            print(c[:50])
-            code_vec = model(tokenizer(c,return_tensors='pt').to(device).input_ids)[1]
-            code_vecs.append(code_vec)
-        
-        # code_2="s = 'hello world'"
-        # code2_vec = model(tokenizer(code_2,return_tensors='pt').to(device).input_ids)[1]
-        # code_3="hello world"
-        # code3_vec = model(tokenizer(code_3,return_tensors='pt').to(device).input_ids)[1]
-        code_vecs1=torch.cat(code_vecs,0) #,code2_vec,code3_vec
-        #codes = [code_1] #,code_2,code_3
-        scores=torch.einsum("ab,cb->ac",query_vec,code_vecs1)
-        scores=torch.softmax(scores,-1)
-        print("Query:",query)
+        code_vecs = torch.cat(tensors, 0)
+        scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
+        scores = torch.softmax(scores, -1)
+        print("Query:", query)
         for i in range(len(codes)):
-            print("Code:",codes[i][:40])
-            print("Score:",scores[0,i].item())
+            print("Code:", codes[i][:40])
+            print("Score:", scores[0,i].item())
 
         return ""
 
