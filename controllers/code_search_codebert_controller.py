@@ -31,14 +31,15 @@ class CodeSearchCodeBertController:
         codes = []
         tensors = []
         lines = content.splitlines()
+        i = 0
         while i < len(lines):
             code = lines[i : (i + batch_size)]
-            code = "\n".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
+            code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
             codes.append(code)
-            print(code)
+            print(code[:40])
             code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
-            i += (batch_size + 1)
+            i += batch_size + 1
 
         
         code_vecs = torch.cat(tensors, 0)
