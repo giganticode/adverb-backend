@@ -11,11 +11,13 @@ import argparse
 from flask import json
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import utils.logging
 
 from controllers.code_summary_controller import CodeSummaryController
 from controllers.code_symbol_controller import CodeSymbolController
 from controllers.code_search_codebert_controller import CodeSearchCodeBertController
 from controllers.code_search_colbert_controller import CodeSearchColBertController
+
 
 DEBUG = True
 PORT = 8090
@@ -97,5 +99,7 @@ if __name__ == "__main__":
     port = args.port
     debug = args.debug
     host = args.host
+
+    utils.logging.debug = debug
 
     app.run(use_reloader=debug, port=port, debug=debug, host=host)

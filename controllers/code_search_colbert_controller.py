@@ -1,4 +1,4 @@
-import logging
+from utils.logging import log
 import os 
 from flask import json
 from flask.wrappers import Request
@@ -58,9 +58,9 @@ class CodeSearchColBertController:
         for passage_id, passage_rank, passage_score in zip(*results):
             return_values.append({"index": passage_id, "match": [0], "rank": passage_rank, "score": passage_score})
 
-        logging.log("Search NL->PL - model:", "colbert")
-        logging.log("Search NL->PL - query:", query)
-        logging.log("Search NL->PL - result:", str(return_values))
+        log("Search NL->PL - model:", "colbert")
+        log("Search NL->PL - query:", query)
+        log("Search NL->PL - result:", str(return_values))
         
         return return_values
 

@@ -1,4 +1,4 @@
-import logging
+from utils.logging import log
 from flask import json
 from flask.wrappers import Request
 import torch
@@ -33,8 +33,8 @@ class CodeSummaryController:
         generated_ids = model.generate(input_ids, max_length=20)
         result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
-        logging.log("Summary - code:", text)
-        logging.log("Summary - result:", result)
+        log("Summary - code:", text)
+        log("Summary - result:", result)
 
         # latency = time.time() - start
         # print("Inference time = {} ms".format(latency * 1000, '.2f'))
