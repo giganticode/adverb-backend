@@ -25,10 +25,10 @@ app = Flask(__name__, static_folder="")
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # controllers
-code_summary = CodeSummaryController()
-code_symbol = CodeSymbolController()
-code_search_code_bert = CodeSearchCodeBertController()
-code_search_col_bert = CodeSearchColBertController()
+code_summary = CodeSummaryController(app.debug)
+code_symbol = CodeSymbolController(app.debug)
+code_search_code_bert = CodeSearchCodeBertController(app.debug)
+code_search_col_bert = CodeSearchColBertController(app.debug)
 
 # API routes
 @app.route("/api/summary", methods = ["POST"])

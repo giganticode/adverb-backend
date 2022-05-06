@@ -7,6 +7,8 @@ from colbert import Indexer, Searcher
 import torch
 
 class CodeSearchColBertController:
+    def __init__(self, debug=False):
+        self.debug = debug
 
     def indexing(self, request: Request):
         if not request.data:
@@ -56,6 +58,12 @@ class CodeSearchColBertController:
         return_values = []
         for passage_id, passage_rank, passage_score in zip(*results):
             return_values.append({"index": passage_id, "match": [0], "rank": passage_rank, "score": passage_score})
+
+        if self.debug:
+            print("Search NL->PL - model:", "colbert")
+            print("Search NL->PL - query:", query)
+            print("Search NL->PL - result:", str(return_values))
+        
         return return_values
 
     def convert_json_to_collection(self, content):

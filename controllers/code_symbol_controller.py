@@ -2,9 +2,10 @@ from flask import json
 from flask.wrappers import Request
 import torch
 from transformers import RobertaTokenizer, T5ForConditionalGeneration, RobertaForMaskedLM, pipeline
-from webservice import app
 
 class CodeSymbolController:
+    def __init__(self, debug=False):
+        self.debug = debug
 
     def get_symbol_name(self, request: Request):
         if not request.data:
@@ -20,7 +21,7 @@ class CodeSymbolController:
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
        
         if model_type == 0:
-            if app.debug:
+            if self.debug:
                 print("New symbol name - model:", "huggingface/CodeBERTa-small-v1")
             model = RobertaForMaskedLM.from_pretrained("huggingface/CodeBERTa-small-v1")
             model.to(device)
@@ -29,7 +30,7 @@ class CodeSymbolController:
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         elif model_type == 1:
-            if app.debug:
+            if self.debug:
                 print("New symbol name - model:", "microsoft/codebert-base-mlm")
             model = RobertaForMaskedLM.from_pretrained("microsoft/codebert-base-mlm")
             model.to(device)
@@ -38,7 +39,7 @@ class CodeSymbolController:
             result = fill_mask(text)
             result = list(map(lambda x: x["token_str"].strip(), result))
         else:
-            if app.debug:
+            if self.debug:
                 print("New symbol name - model:", "Salesforce/codet5-base")
             model = T5ForConditionalGeneration.from_pretrained("Salesforce/codet5-base")
             model.to(device)
@@ -48,7 +49,7 @@ class CodeSymbolController:
             generated_ids = model.generate(input_ids, max_length=8)
             result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
-        if app.debug:
+        if self.debug:
             print("New symbol name - code:", text)
             print("New symbol name - result:", result)
 
