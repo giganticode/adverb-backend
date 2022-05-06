@@ -1,3 +1,4 @@
+import logging
 import os 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
@@ -17,7 +18,7 @@ from controllers.code_symbol_controller import CodeSymbolController
 from controllers.code_search_codebert_controller import CodeSearchCodeBertController
 from controllers.code_search_colbert_controller import CodeSearchColBertController
 
-DEBUG = False
+DEBUG = True
 PORT = 8090
 
 app = Flask(__name__, static_folder="")
@@ -97,5 +98,7 @@ if __name__ == "__main__":
     port = args.port
     debug = args.debug
     host = args.host
+
+    logging.debug = debug
 
     app.run(use_reloader=debug, port=port, debug=debug, host=host)

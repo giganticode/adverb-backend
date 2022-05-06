@@ -1,3 +1,3 @@
 #!/bin/sh
-CUDA_VISIBLE_DEVICES=0, python webservice.py --debug=True
+CUDA_VISIBLE_DEVICES=0, python webservice.py
 $SHELL
