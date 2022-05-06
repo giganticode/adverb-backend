@@ -28,29 +28,31 @@ class CodeSearchCodeBertController:
         query = search_text
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
              
-        codes = []
+        codePartsCounter = 0
         tensors = []
         lines = content.splitlines()
         i = 0
         while i < len(lines):
+            codePartsCounter += 1
             code = lines[i : (i + batch_size)]
             code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
-            codes.append(code)
-            print(code[:40])
             code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
             i += batch_size + 1
 
-        
         code_vecs = torch.cat(tensors, 0)
         scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
         scores = torch.softmax(scores, -1)
-        print("Query:", query)
-        for i in range(len(codes)):
-            print("Code:", codes[i][:40])
-            print("Score:", scores[0,i].item())
 
-        return ""
+        search_lines = []
+        for i in range(codePartsCounter):
+            score = scores[0, i].item()
+            line = i * batch_size
+            # print("Score:", score)
+            if score > 9:
+                search_lines.append(line)
+
+        return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
 
 
 
