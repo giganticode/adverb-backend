@@ -19,7 +19,7 @@ from controllers.code_search_codebert_controller import CodeSearchCodeBertContro
 from controllers.code_search_colbert_controller import CodeSearchColBertController
 
 
-DEBUG = True
+DEBUG = False
 PORT = 8090
 
 app = Flask(__name__, static_folder="")
