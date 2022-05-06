@@ -1,5 +1,5 @@
 debug = False
 
-def log(text):
+def log(source, content):
     if debug:
-        print(text)
+        print(source, content)
