@@ -48,7 +48,7 @@ class CodeSearchCodeBertController:
         for i in range(codePartsCounter):
             score = scores[0, i].item()
             line = i * batch_size
-            # print("Score:", score)
+            print("Score:", score)
             if score > 9:
                 search_lines.append(line)
 
