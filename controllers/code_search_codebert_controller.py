@@ -39,6 +39,7 @@ class CodeSearchCodeBertController:
         
         code_vecs = []
         for c in codes:
+            print(c[:50])
             code_vec = model(tokenizer(c,return_tensors='pt').to(device).input_ids)[1]
             code_vecs.append(code_vec)
         
@@ -52,7 +53,7 @@ class CodeSearchCodeBertController:
         scores=torch.softmax(scores,-1)
         print("Query:",query)
         for i in range(len(codes)):
-            print("Code:",i)
+            print("Code:",codes[i][:40])
             print("Score:",scores[0,i].item())
 
         return ""
