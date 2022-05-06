@@ -1,3 +1,4 @@
+import logging
 import os 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
@@ -25,10 +26,10 @@ app = Flask(__name__, static_folder="")
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # controllers
-code_summary = CodeSummaryController(app.debug)
-code_symbol = CodeSymbolController(app.debug)
-code_search_code_bert = CodeSearchCodeBertController(app.debug)
-code_search_col_bert = CodeSearchColBertController(app.debug)
+code_summary = CodeSummaryController()
+code_symbol = CodeSymbolController()
+code_search_code_bert = CodeSearchCodeBertController()
+code_search_col_bert = CodeSearchColBertController()
 
 # API routes
 @app.route("/api/summary", methods = ["POST"])
@@ -97,5 +98,7 @@ if __name__ == "__main__":
     port = args.port
     debug = args.debug
     host = args.host
+
+    logging.debug = debug
 
     app.run(use_reloader=debug, port=port, debug=debug, host=host)

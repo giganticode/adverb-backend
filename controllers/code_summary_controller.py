@@ -1,3 +1,4 @@
+import logging
 from flask import json
 from flask.wrappers import Request
 import torch
@@ -6,8 +7,6 @@ from transformers import RobertaTokenizer, T5ForConditionalGeneration
 # import time
 
 class CodeSummaryController:
-    def __init__(self, debug=False):
-        self.debug = debug
 
     def get_summary(self, request: Request):
         if not request.data:
@@ -34,9 +33,8 @@ class CodeSummaryController:
         generated_ids = model.generate(input_ids, max_length=20)
         result = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
-        if self.debug:
-            print("Summary - code:", text)
-            print("Summary - result:", result)
+        logging.log("Summary - code:", text)
+        logging.log("Summary - result:", result)
 
         # latency = time.time() - start
         # print("Inference time = {} ms".format(latency * 1000, '.2f'))

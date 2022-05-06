@@ -8,9 +8,7 @@ import numpy as np
 from tqdm import tqdm
 
 class CodeSearchCodeBertController:
-    def __init__(self, debug=False):
-        self.debug = debug
-
+    
     def search_for_text(self, request: Request):
         if not request.data:
             return None
