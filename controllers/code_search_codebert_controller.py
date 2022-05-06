@@ -10,6 +10,12 @@ from tqdm import tqdm
 class CodeSearchCodeBertController:
     
     def search_for_text(self, request: Request):
+        if not request.data:
+            return None
+
+        data1 = json.loads(request.data)
+        content1 = data1.get("content", "")
+
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
@@ -51,12 +57,13 @@ class CodeSearchCodeBertController:
                 f.write(image)
         """
         code2_vec = model(tokenizer(code_2,return_tensors='pt').to(device).input_ids)[1]
-        code_3="""
-        def f(image_url, output_dir):
-            import requests
-            r = requests.get(image_url)
-            return r.content
-        """
+        # code_3="""
+        # def f(image_url, output_dir):
+        #     import requests
+        #     r = requests.get(image_url)
+        #     return r.content
+        # """
+        code_3 = content1
         code3_vec = model(tokenizer(code_3,return_tensors='pt').to(device).input_ids)[1]
         code_vecs=torch.cat((code1_vec,code2_vec,code3_vec),0)
         codes = [code_1,code_2,code_3]
