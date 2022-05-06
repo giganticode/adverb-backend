@@ -1,4 +1,4 @@
-from printing import print_to_console
+from controllers.printing import print_to_console
 import os 
 from flask import json
 from flask.wrappers import Request
