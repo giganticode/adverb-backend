@@ -63,7 +63,7 @@ class CodeSearchCodeBertController:
         #     r = requests.get(image_url)
         #     return r.content
         # """
-        code_3 = content1
+        code_3 = content1[:512]
         code3_vec = model(tokenizer(code_3,return_tensors='pt').to(device).input_ids)[1]
         code_vecs=torch.cat((code1_vec,code2_vec,code3_vec),0)
         codes = [code_1,code_2,code_3]
