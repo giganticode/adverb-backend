@@ -52,6 +52,8 @@ class CodeSearchCodeBertController:
             if score > 9:
                 search_lines.append(line)
 
+        print(str(search_lines))
+
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
 
 
