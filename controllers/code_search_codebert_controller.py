@@ -2,10 +2,7 @@ import os
 from flask import json
 from flask.wrappers import Request
 import torch
-from torch.utils.data import DataLoader, TensorDataset, SequentialSampler
-from transformers import RobertaConfig, RobertaModel, RobertaTokenizer, RobertaForSequenceClassification
-import numpy as np
-from tqdm import tqdm
+from transformers import RobertaModel, RobertaTokenizer
 
 class CodeSearchCodeBertController:
     
@@ -36,7 +33,7 @@ class CodeSearchCodeBertController:
             codePartsCounter += 1
             code = lines[i : (i + batch_size)]
             code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
-            code_vec =  model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
+            code_vec = model(tokenizer(code, return_tensors="pt").to(device).input_ids)[1]
             tensors.append(code_vec)
             i += batch_size + 1
 
