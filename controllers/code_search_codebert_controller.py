@@ -1,3 +1,4 @@
+from controllers.printing import print_to_console
 import os
 from flask import json
 from flask.wrappers import Request
@@ -21,32 +22,49 @@ class CodeSearchCodeBertController:
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
         model.to(device)
-        
+
+        print_to_console("Search NL->PL - model:", "codebert")
+        print_to_console("Search NL->PL - query:", query)
+
         query = search_text
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
-             
-        codePartsCounter = 0
-        tensors = []
-        lines = content.splitlines()
-        i = 0
-        while i < len(lines):
-            codePartsCounter += 1
-            code = lines[i : (i + batch_size)]
-            code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
-            tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
-            code_vec = model(tokens)[1]
-            tensors.append(code_vec)
-            i += batch_size + 1
 
-        code_vecs = torch.cat(tensors, 0)
-        scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
-        scores = torch.softmax(scores, -1)
+        content = json.loads(str(content))
+        data = []
+        for item in content:
+            file_content = str(item["content"])
+            if file_content:
+                file_content = file_content.replace("\r\n", " ").replace("\n", " ")
+                data.append(file_content)
 
-        search_lines = []
-        for i in range(codePartsCounter):
-            score = scores[0, i].item()
-            line = i * batch_size
-            if score > 0.9:
-                search_lines.append(line)
+        result = []
+        for d in data:
+            codePartsCounter = 0
+            tensors = []
+            lines = content.splitlines()
+            i = 0
+            while i < len(lines):
+                codePartsCounter += 1
+                code = lines[i : (i + batch_size)]
+                code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
+                tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
+                code_vec = model(tokens)[1]
+                tensors.append(code_vec)
+                i += batch_size + 1
+
+            code_vecs = torch.cat(tensors, 0)
+            scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
+            scores = torch.softmax(scores, -1)
+
+            search_lines = []
+            for i in range(codePartsCounter):
+                score = scores[0, i].item()
+                line = i * batch_size
+                if score > 0.9:
+                    search_lines.append(line)
+
+            result.append({"index": d["index"], "match": search_text})
+
+        print_to_console("Search NL->PL - result:", str(result))
 
         return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
