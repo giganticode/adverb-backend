@@ -24,7 +24,7 @@ class CodeSearchCodeBertController:
         model.to(device)
 
         print_to_console("Search NL->PL - model:", "codebert")
-        print_to_console("Search NL->PL - query:", query)
+        print_to_console("Search NL->PL - query:", search_text)
 
         query = search_text
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
