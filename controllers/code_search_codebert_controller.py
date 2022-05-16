@@ -29,19 +29,11 @@ class CodeSearchCodeBertController:
         query = search_text
         query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
 
-        content = json.loads(str(content))
-        data = []
-        for item in content:
-            file_content = str(item["content"])
-            if file_content:
-                file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                data.append(file_content)
-
         result = []
-        for d in data:
+        for item in json.loads(str(content)):
             codePartsCounter = 0
             tensors = []
-            lines = content.splitlines()
+            lines = str(item["content"]).splitlines()
             i = 0
             while i < len(lines):
                 codePartsCounter += 1
@@ -63,7 +55,7 @@ class CodeSearchCodeBertController:
                 if score > 0.9:
                     search_lines.append(line)
 
-            result.append({"index": d["index"], "match": search_text})
+            result.append({"index": item["index"], "match": search_text})
 
         print_to_console("Search NL->PL - result:", str(result))
 
