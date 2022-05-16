@@ -40,7 +40,7 @@ class CodeSearchCodeBertController:
                 code = lines[i : (i + batch_size)]
                 code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
-                print(item["index"])
+                print(i + " " + item)
                 code_vec = model(tokens)[1]
                 tensors.append(code_vec)
                 i += batch_size + 1
