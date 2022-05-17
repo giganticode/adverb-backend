@@ -54,9 +54,9 @@ class CodeSearchCodeBertController:
                 score = scores[0, i].item()
                 line = i * batch_size
                 if score > 0.9:
-                    search_lines.append(line)
+                    search_lines.append({"line": line, "score": score})
             if len(search_lines) > 0:
-                print_to_console("Search NL->PL - document matches:", str(len(search_lines)))
+                print_to_console("Search NL->PL - document matches:", search_lines)
                 result.append({"relativePath": item["relativePath"], "match": search_lines})
 
         print_to_console("Search NL->PL - result:", str(result))
