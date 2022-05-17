@@ -31,6 +31,7 @@ class CodeSearchCodeBertController:
 
         result = []
         for item in json.loads(str(content)):
+            print(str(item["relativePath"]))
             codePartsCounter = 0
             tensors = tuple()
             lines = str(item["content"]).splitlines()
