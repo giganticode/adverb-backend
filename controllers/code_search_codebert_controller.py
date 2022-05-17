@@ -32,7 +32,7 @@ class CodeSearchCodeBertController:
         result = []
         for item in json.loads(str(content)):
             codePartsCounter = 0
-            tensors = []
+            # tensors = []
             lines = str(item["content"]).splitlines()
             i = 0
             while i < len(lines):
@@ -40,13 +40,16 @@ class CodeSearchCodeBertController:
                 code = lines[i : (i + batch_size)]
                 code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
-                print(str(item["relativePath"]) + ": " + str(i))
                 code_vec = model(tokens)[1]
-                print(type(code_vec))
-                tensors.append(code_vec)
+                # tensors.append(code_vec)
+                print(str(code_vec.shape))
+                if not code_vecs:
+                    code_vecs = torch.empty(code_vec.shape)
+                code_vecs = torch.cat([code_vecs, code_vec], 0)
+                print(str(code_vecs.shape))
                 i += batch_size + 1
 
-            code_vecs = torch.cat(tensors, 0)
+            # code_vecs = torch.cat(tensors, 0)
             scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
             scores = torch.softmax(scores, -1)
 
