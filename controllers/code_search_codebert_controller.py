@@ -35,7 +35,7 @@ class CodeSearchCodeBertController:
             # tensors = []
             lines = str(item["content"]).splitlines()
             i = 0
-            code_vecs = torch.empty((1, 768))
+            code_vecs = torch.empty((1, 768), device=device)
             while i < len(lines):
                 codePartsCounter += 1
                 code = lines[i : (i + batch_size)]
