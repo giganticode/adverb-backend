@@ -40,7 +40,7 @@ class CodeSearchCodeBertController:
                 code = lines[i : (i + batch_size)]
                 code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
-                print(str(i) + " " + str(item))
+                print(str(item["relativePath"]) + ": " + str(i))
                 code_vec = model(tokens)[1]
                 tensors.append(code_vec)
                 i += batch_size + 1
@@ -56,8 +56,8 @@ class CodeSearchCodeBertController:
                 if score > 0.9:
                     search_lines.append(line)
 
-            result.append({"index": item["index"], "match": search_text})
+            result.append({"index": item["relativePath"], "match": search_lines})
 
         print_to_console("Search NL->PL - result:", str(result))
 
-        return { "result": {"search_text": search_text, "search_lines": search_lines, "batch_size": batch_size} }
+        return { "result": {"search_text": search_text, "search_lines": result, "batch_size": batch_size} }
