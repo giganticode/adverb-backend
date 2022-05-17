@@ -59,6 +59,6 @@ class CodeSearchCodeBertController:
                 print_to_console("Search NL->PL - document matches:", search_lines)
                 result.append({"relativePath": item["relativePath"], "match": search_lines})
 
-        print_to_console("Search NL->PL - result:", str(result))
+        print_to_console("Search NL->PL - result:", "Done!")
 
         return result
