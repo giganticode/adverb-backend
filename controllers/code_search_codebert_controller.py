@@ -31,7 +31,7 @@ class CodeSearchCodeBertController:
 
         result = []
         for item in json.loads(str(content)):
-            print(str(item["relativePath"]))
+            print_to_console("Search NL->PL - document:", str(item["relativePath"]))
             codePartsCounter = 0
             tensors = tuple()
             lines = str(item["content"]).splitlines()
@@ -55,8 +55,9 @@ class CodeSearchCodeBertController:
                 line = i * batch_size
                 if score > 0.9:
                     search_lines.append(line)
-
-            result.append({"index": item["relativePath"], "match": search_lines})
+            if len(search_lines) > 0:
+                print_to_console("Search NL->PL - document matches:", str(len(search_lines)))
+                result.append({"index": item["relativePath"], "match": search_lines})
 
         print_to_console("Search NL->PL - result:", str(result))
 
