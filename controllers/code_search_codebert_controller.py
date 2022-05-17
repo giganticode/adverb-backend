@@ -57,7 +57,7 @@ class CodeSearchCodeBertController:
                     search_lines.append(line)
             if len(search_lines) > 0:
                 print_to_console("Search NL->PL - document matches:", str(len(search_lines)))
-                result.append({"index": str(item["relativePath"]), "match": search_lines})
+                result.append({"index": item["relativePath"], "match": search_lines})
 
         print_to_console("Search NL->PL - result:", str(result))
 
