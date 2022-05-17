@@ -59,4 +59,4 @@ class CodeSearchCodeBertController:
 
         print_to_console("Search NL->PL - result:", str(result))
 
-        return { "result": {"search_text": search_text, "search_lines": result, "batch_size": batch_size} }
+        return result
