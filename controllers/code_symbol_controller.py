@@ -17,7 +17,7 @@ class CodeSymbolController:
         text = text[:512]
         
         model_type = data.get("modelType", 2)
-        device = "cuda" if torch.cuda.is_available() else "cpu"
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
        
         if model_type == 0:
             print_to_console("New symbol name - model:", "huggingface/CodeBERTa-small-v1")

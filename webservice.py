@@ -1,7 +1,7 @@
 import os 
-# os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
-# os.environ["CUDA_VISIBLE_DEVICES"]="0"
-# tf_device='/gpu:0'
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+tf_device='/gpu:0'
 
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src", "colbert", "colbert"))

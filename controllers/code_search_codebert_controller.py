@@ -18,7 +18,7 @@ class CodeSearchCodeBertController:
         if not content or not search_text:
             return None
 
-        device = "cuda" if torch.cuda.is_available() else "cpu"
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
         tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         model = RobertaModel.from_pretrained(os.path.join(os.getcwd(), "models", "codebert-base"), local_files_only=True)
         model.to(device)
@@ -27,12 +27,12 @@ class CodeSearchCodeBertController:
         print_to_console("Search NL->PL - query:", search_text)
 
         query = search_text
-        query_vec = model(tokenizer(query,return_tensors='pt').to(device).input_ids)[1]
+        query_vec = model(tokenizer(query,return_tensors="pt").to(device).input_ids)[1]
 
         result = []
         for item in json.loads(str(content)):
             codePartsCounter = 0
-            tensors = []
+            tensors = tuple()
             lines = str(item["content"]).splitlines()
             i = 0
             while i < len(lines):
@@ -41,7 +41,7 @@ class CodeSearchCodeBertController:
                 code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
                 code_vec = model(tokens)[1]
-                tensors.append(code_vec)
+                tensors = tensors + (code_vec,)
                 i += batch_size + 1
 
             code_vecs = torch.cat(tensors, 0)
