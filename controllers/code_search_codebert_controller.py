@@ -42,7 +42,7 @@ class CodeSearchCodeBertController:
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
                 print(str(item["relativePath"]) + ": " + str(i))
                 code_vec = model(tokens)[1]
-                type(code_vec)
+                print(type(code_vec))
                 tensors.append(code_vec)
                 i += batch_size + 1
 
