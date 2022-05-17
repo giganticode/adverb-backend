@@ -24,7 +24,7 @@ class CodeSearchColBertController:
 
         nbits = 2   # encode each dimension with 2 bits
         doc_maxlen = 300   # truncate passages at 300 tokens
-        nranks = 1 if torch.cuda.is_available() else 0      # number of gpu's to use
+        nranks = 4 if torch.cuda.is_available() else 0      # number of gpu's to use
         with Run().context(RunConfig(nranks=nranks)):
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
             config.local_files_only = True  # use local indexer checkpoint

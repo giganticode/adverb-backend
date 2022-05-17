@@ -18,7 +18,7 @@ class CodeSummaryController:
             return None
         text = text[:512]
 
-        device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        device = "cuda" if torch.cuda.is_available() else "cpu"
         model_name = "Salesforce/codet5-base-multi-sum"
         tokenizer = RobertaTokenizer.from_pretrained(model_name)
 
