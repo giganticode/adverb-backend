@@ -42,21 +42,21 @@ class CodeSearchCodeBertController:
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
                 print(str(item["relativePath"]) + ": " + str(i))
                 code_vec = model(tokens)[1]
-                tensors.append(code_vec)
+                # tensors.append(code_vec)
                 i += batch_size + 1
 
-            code_vecs = torch.cat(tensors, 0)
-            scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
-            scores = torch.softmax(scores, -1)
+            # code_vecs = torch.cat(tensors, 0)
+            # scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)
+            # scores = torch.softmax(scores, -1)
 
-            search_lines = []
-            for i in range(codePartsCounter):
-                score = scores[0, i].item()
-                line = i * batch_size
-                if score > 0.9:
-                    search_lines.append(line)
+            # search_lines = []
+            # for i in range(codePartsCounter):
+            #     score = scores[0, i].item()
+            #     line = i * batch_size
+            #     if score > 0.9:
+            #         search_lines.append(line)
 
-            result.append({"index": item["relativePath"], "match": search_lines})
+            # result.append({"index": item["relativePath"], "match": search_lines})
 
         print_to_console("Search NL->PL - result:", str(result))
 
