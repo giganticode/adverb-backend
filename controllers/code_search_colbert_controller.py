@@ -29,7 +29,7 @@ class CodeSearchColBertController:
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
             config.local_files_only = True  # use local indexer checkpoint
             config.overwrite = True
-            indexer = Indexer(checkpoint=checkpoint, config=config, )
+            indexer = Indexer(checkpoint=checkpoint, config=config)
             indexer.index(name=index_name, collection=collection, overwrite=True)
             # print_to_console(indexer.get_index())
         
