@@ -19,13 +19,14 @@ class CodeSearchColBertController:
         if not content:
             return None
        
+        print_to_console("Search indexing - model:", "colbert")
         collection = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
 
         nbits = 2   # encode each dimension with 2 bits
         doc_maxlen = 300   # truncate passages at 300 tokens
-        nranks = 1 if torch.cuda.is_available() else 0      # number of gpu's to use
-        with Run().context(RunConfig(nranks=nranks)):
+        nranks = 1 if torch.cuda.is_available() else 0  # number of gpu's to use
+        with Run().context(RunConfig(nranks=nranks, overwrite=True, gpus=nranks)):
             config = ColBERTConfig(doc_maxlen=doc_maxlen, nbits=nbits)
             config.local_files_only = True  # use local indexer checkpoint
             config.overwrite = True
@@ -49,7 +50,8 @@ class CodeSearchColBertController:
         collection = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
         
-        with Run().context(RunConfig()):
+        nranks = 1 if torch.cuda.is_available() else 0  # number of gpu's to use
+        with Run().context(RunConfig(nranks=nranks, gpus=nranks)):
             searcher = Searcher(index=index_name, checkpoint=checkpoint, collection=collection)
 
         results = searcher.search(query, k=5)

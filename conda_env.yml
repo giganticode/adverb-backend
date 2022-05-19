@@ -1,4 +1,4 @@
-name: adverb2
+name: adverb
 channels:
   - pytorch
   - nvidia
