@@ -4,10 +4,51 @@ from flask import json
 from flask.wrappers import Request
 import torch
 from transformers import RobertaModel, RobertaTokenizer
+from unixcoder import UniXcoder
 
 class CodeSearchCodeBertController:
     
     def search_for_text(self, request: Request):
+        if not request.data:
+            return None
+
+        data = json.loads(request.data)
+        content = data.get("content", "")
+        search_text = data.get("search", "")
+        batch_size = data.get("batch_size", 8)
+        if not content or not search_text:
+            return None
+
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model = UniXcoder("microsoft/unixcoder-base")
+        model.to(device)
+
+        print_to_console("Search NL->PL - model:", "codebert")
+        print_to_console("Search NL->PL - query:", search_text)
+
+        query = search_text
+
+        tokens_ids = model.tokenize([query],max_length=512,mode="<encoder-only>")
+        source_ids = torch.tensor(tokens_ids).to(device)
+        _, query_embedding = model(source_ids)
+        norm_query_embedding = torch.nn.functional.normalize(query_embedding, p=2, dim=1)
+
+        result = []
+        for item in json.loads(str(content)):
+            relativePath = str(item["relativePath"])
+            code = str(item["content"])
+            tokens_ids = model.tokenize([code], max_length=512, mode="<encoder-only>")
+            source_ids = torch.tensor(tokens_ids).to(device)
+            _, code_embedding = model(source_ids)
+            norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
+            similarity = torch.einsum("ac,bc->ab",norm_code_embedding, norm_query_embedding)
+            print_to_console("Search NL->PL - document:", relativePath + " - " + str(similarity))
+            result.push({"relativePath": relativePath, "match": {"line": 0, "score": similarity}})
+        print_to_console("Search NL->PL - result:", "Done!")
+        return result
+
+
+    def search_for_text2(self, request: Request):
         if not request.data:
             return None
 
