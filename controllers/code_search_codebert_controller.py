@@ -52,7 +52,7 @@ class CodeSearchCodeBertController:
                 similarity = torch.einsum("ac,bc->ab", norm_code_embedding, norm_query_embedding)
                 score = similarity[0, 0].item()
                 print_to_console("Search NL->PL - line:", str(i) + " - " + str(score))
-                if similarity > 0.1:
+                if similarity > 0.3:
                     file_results.append({"line": i, "score": score })
                 i += batch_size + 1
 
