@@ -43,7 +43,7 @@ class CodeSearchCodeBertController:
             norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
             similarity = torch.einsum("ac,bc->ab",norm_code_embedding, norm_query_embedding)
             print_to_console("Search NL->PL - document:", relativePath + " - " + str(similarity))
-            result.push({"relativePath": relativePath, "match": {"line": 0, "score": similarity}})
+            result.append({"relativePath": relativePath, "match": {"line": 0, "score": similarity}})
         print_to_console("Search NL->PL - result:", "Done!")
         return result
 
