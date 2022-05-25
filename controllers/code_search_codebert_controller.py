@@ -36,14 +36,27 @@ class CodeSearchCodeBertController:
         result = []
         for item in json.loads(str(content)):
             relativePath = str(item["relativePath"])
-            code = str(item["content"])[:512]
-            tokens_ids = model.tokenize([code], max_length=512, mode="<encoder-only>")
-            source_ids = torch.tensor(tokens_ids).to(device)
-            _, code_embedding = model(source_ids)
-            norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
-            similarity = torch.einsum("ac,bc->ab",norm_code_embedding, norm_query_embedding)
-            print_to_console("Search NL->PL - document:", relativePath + " - " + str(similarity))
-            result.append({"relativePath": relativePath, "match": {"line": 0, "score": similarity}})
+            print_to_console("Search NL->PL - document:", relativePath)
+            codePartsCounter = 0
+            lines = str(item["content"]).splitlines()
+            i = 0
+            file_results = []
+            while i < len(lines):
+                codePartsCounter += 1
+                code = lines[i : (i + batch_size)]
+                code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
+                tokens_ids = model.tokenize([code], max_length=512, mode="<encoder-only>")
+                source_ids = torch.tensor(tokens_ids).to(device)
+                _, code_embedding = model(source_ids)
+                norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
+                similarity = torch.einsum("ac,bc->ab", norm_code_embedding, norm_query_embedding)
+                score = similarity[0, 0].item()
+                print_to_console("Search NL->PL - line:", i + " - " + score)
+                if similarity > 0.9:
+                    file_results.append({"line": i, "score": score })
+                i += batch_size + 1
+
+            result.append({"relativePath": relativePath, "match": file_results})
         print_to_console("Search NL->PL - result:", "Done!")
         return result
 
