@@ -36,7 +36,7 @@ class CodeSearchCodeBertController:
         result = []
         for item in json.loads(str(content)):
             relativePath = str(item["relativePath"])
-            code = str(item["content"])
+            code = str(item["content"])[:512]
             tokens_ids = model.tokenize([code], max_length=512, mode="<encoder-only>")
             source_ids = torch.tensor(tokens_ids).to(device)
             _, code_embedding = model(source_ids)
