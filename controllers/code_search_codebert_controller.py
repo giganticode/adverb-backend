@@ -51,7 +51,7 @@ class CodeSearchCodeBertController:
                 norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
                 similarity = torch.einsum("ac,bc->ab", norm_code_embedding, norm_query_embedding)
                 score = similarity[0, 0].item()
-                if similarity > 0.6:
+                if similarity > 0.5:
                     file_results.append({"line": i, "score": score })
                 i += batch_size + 1
 
