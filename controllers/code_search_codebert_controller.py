@@ -4,7 +4,7 @@ from flask import json
 from flask.wrappers import Request
 import torch
 from transformers import RobertaModel, RobertaTokenizer
-from unixcoder import UniXcoder
+from controllers.unixcoder import UniXcoder
 
 class CodeSearchCodeBertController:
     
