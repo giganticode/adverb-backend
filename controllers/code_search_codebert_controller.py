@@ -53,7 +53,7 @@ class CodeSearchCodeBertController:
                 score = similarity[0, 0].item()
                 print_to_console("Search NL->PL - line:", str(i) + " - " + score)
                 if similarity > 0.9:
-                    file_results.append({"line": i, "score": score })
+                    file_results.append({"line": i, "score": str(score) })
                 i += batch_size + 1
 
             result.append({"relativePath": relativePath, "match": file_results})
