@@ -84,13 +84,13 @@ class CodeSearchColBertController:
         for item in content:
             file_content = str(item["content"])
             if file_content:
-                file_content = file_content.replace("\r\n", " ").replace("\n", " ")
                 lines = file_content.splitlines()
                 i = 0
                 while i < len(lines):
                     code = lines[i : (i + batch_size)]
+                    code = " ".join(code).replace("\r\n", " ").replace("\n", " ")
                     file_parts.append({"relativePath": item["relativePath"], "line": i})
-                    data.append(str(code))
+                    data.append(code)
                     i += batch_size + 1
         print_to_console("Search NL->PL - len data:", str(len(data)))
         print_to_console("Search NL->PL - len file_parts:", str(len(file_parts)))
