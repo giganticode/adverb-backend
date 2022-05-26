@@ -53,7 +53,7 @@ class CodeSearchCodeBertController:
                 score = similarity[0, 0].item()
                 if similarity > 0.4:
                     file_results.append({"line": i, "score": score })
-                i += batch_size + 1
+                i += batch_size
 
             result.append({"relativePath": relativePath, "match": file_results})
         
@@ -97,7 +97,7 @@ class CodeSearchCodeBertController:
                 tokens = tokenizer(code, return_tensors="pt").to(device).input_ids
                 code_vec = model(tokens)[1]
                 tensors = tensors + (code_vec,)
-                i += batch_size + 1
+                i += batch_size
 
             code_vecs = torch.cat(tensors, 0)
             scores = torch.einsum("ab,cb->ac", query_vec, code_vecs)

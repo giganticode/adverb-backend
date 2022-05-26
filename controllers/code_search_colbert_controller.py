@@ -91,7 +91,7 @@ class CodeSearchColBertController:
                     code = " ".join(code).replace("\r\n", " ").replace("\n", " ")
                     file_parts.append({"relativePath": item["relativePath"], "line": i})
                     data.append(code)
-                    i += batch_size + 1
+                    i += batch_size
 
         collection = Collection(data=data)
         return collection, file_parts
