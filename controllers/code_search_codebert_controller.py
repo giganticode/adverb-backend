@@ -44,7 +44,9 @@ class CodeSearchCodeBertController:
             while i < len(lines):
                 codePartsCounter += 1
                 code = lines[i : (i + batch_size)]
-                code = " ".join(code).replace("\r\n", " ").replace("\n", " ")[:512]
+                code = " ".join(code).replace("\r\n", " ").replace("\n", " ").strip()[:512].strip()
+                if not code or code.isspace():
+                    continue
                 tokens_ids = model.tokenize([code], max_length=512, mode="<encoder-only>")
                 source_ids = torch.tensor(tokens_ids).to(device)
                 _, code_embedding = model(source_ids)
