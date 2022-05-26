@@ -90,6 +90,7 @@ class CodeSearchColBertController:
                     code = lines[i : (i + batch_size)]
                     code = " ".join(code).replace("\r\n", " ").replace("\n", " ").strip()
                     if not code or code.isspace():
+                        i += batch_size
                         continue
                     file_parts.append({"relativePath": item["relativePath"], "line": i})
                     data.append(code)
