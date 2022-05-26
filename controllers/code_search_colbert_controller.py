@@ -16,11 +16,12 @@ class CodeSearchColBertController:
         data = json.loads(request.data)
         content = data.get("content", "")
         index_name = data.get("index_name", "adverb")
+        batch_size = data.get("batch_size", 8)
         if not content:
             return None
        
         print_to_console("Search indexing - model:", "colbert")
-        collection = self.convert_json_to_collection(content)
+        collection, _ = self.convert_json_to_collection(content, batch_size)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
 
         nbits = 2   # encode each dimension with 2 bits
@@ -44,21 +45,31 @@ class CodeSearchColBertController:
         query = data.get("search", "")
         content = data.get("content", "")
         index_name = data.get("index_name", "adverb")
+        batch_size = data.get("batch_size", 8)
         if not query or not content:
             return None
 
-        collection = self.convert_json_to_collection(content)
+        collection, file_parts = self.convert_json_to_collection(content, batch_size)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
         
         nranks = 1 if torch.cuda.is_available() else 0  # number of gpu's to use
         with Run().context(RunConfig(nranks=nranks, gpus=nranks)):
             searcher = Searcher(index=index_name, checkpoint=checkpoint, collection=collection)
 
-        results = searcher.search(query, k=5)
+        results = searcher.search(query, k=10)
         
         return_values = []
         for passage_id, passage_rank, passage_score in zip(*results):
-            return_values.append({"index": passage_id, "match": [0], "rank": passage_rank, "score": passage_score})
+            file_part = file_parts[passage_id]
+            match = {"line": file_part["line"], "rank": passage_rank, "score": passage_score}
+            found = False
+            for v in return_values:
+                if v["relativePath"] == file_part["relativePath"]:
+                    v["match"].append(match)
+                    found = True
+                    break
+            if found == False:
+                return_values.append({ "relativePath": file_part["relativePath"], "match": [match] })
 
         print_to_console("Search NL->PL - model:", "colbert")
         print_to_console("Search NL->PL - query:", query)
@@ -66,14 +77,21 @@ class CodeSearchColBertController:
         
         return return_values
 
-    def convert_json_to_collection(self, content):
+    def convert_json_to_collection(self, content, batch_size):
         content = json.loads(str(content))
         data = []
+        file_parts = []
         for item in content:
             file_content = str(item["content"])
             if file_content:
                 file_content = file_content.replace("\r\n", " ").replace("\n", " ")
-                data.append(file_content)
+                lines = file_content.splitlines()
+                i = 0
+                while i < len(lines):
+                    code = lines[i : (i + batch_size)]
+                    file_parts.append({"relativePath": item["relativePath"], "line": i})
+                    data.append(code)
+                    i += batch_size + 1
 
         collection = Collection(data=data)
-        return collection
+        return collection, file_parts
