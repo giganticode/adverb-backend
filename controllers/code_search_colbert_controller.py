@@ -47,12 +47,12 @@ class CodeSearchColBertController:
         if not query or not content:
             return None
 
-        # collection = self.convert_json_to_collection(content)
+        collection = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
         
         nranks = 1 if torch.cuda.is_available() else 0  # number of gpu's to use
         with Run().context(RunConfig(nranks=nranks, gpus=nranks)):
-            searcher = Searcher(index=index_name, checkpoint=checkpoint)
+            searcher = Searcher(index=index_name, checkpoint=checkpoint, collection=collection)
 
         results = searcher.search(query, k=5)
         
