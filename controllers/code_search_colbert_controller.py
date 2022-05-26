@@ -92,6 +92,7 @@ class CodeSearchColBertController:
                     file_parts.append({"relativePath": item["relativePath"], "line": i})
                     data.append(str(code))
                     i += batch_size + 1
-
+        print_to_console("Search NL->PL - len data:", str(len(data)))
+        print_to_console("Search NL->PL - len file_parts:", str(len(file_parts)))
         collection = Collection(data=data)
         return collection, file_parts
