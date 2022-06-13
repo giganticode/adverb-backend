@@ -27,7 +27,6 @@ class CodeSearchCodeBertController:
         _, query_embedding = model(source_ids)
         norm_query_embedding = torch.nn.functional.normalize(query_embedding, p=2, dim=1)
 
-        result = []
         for file in content:
             new_matches = []
             file_parts = file["matches"]
@@ -39,8 +38,8 @@ class CodeSearchCodeBertController:
                 norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
                 similarity = torch.einsum("ac,bc->ab", norm_code_embedding, norm_query_embedding)
                 score = similarity[0, 0].item()
-                if similarity > 0.4:
-                    new_matches.append(part)
+                if score > 0.3:
+                    new_matches.append({"start": part["start"], "end": part["end"], "code": part["code"], "score": score})
             file["matches"] = new_matches
 
         print_to_console("Search NL->PL - model:", "codebert")

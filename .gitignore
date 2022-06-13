@@ -1,9 +1,10 @@
 **/adverb-venv/
 **/models/**
 **/downloads/**
+**/experiments/**
 **/.vscode
 **/src/**
-
+open_sftp_vscode.bat
 
 
 # Byte-compiled / optimized / DLL files

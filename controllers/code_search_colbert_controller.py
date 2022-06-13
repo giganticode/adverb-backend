@@ -61,17 +61,17 @@ class CodeSearchColBertController:
         model_result = {}
         for passage_id, passage_rank, passage_score in zip(*results):
             model_result[passage_id] = {"rank": passage_rank, "score": passage_score}
-        
+        print(str(model_result))
         part_index = 0
         for file in content:
             new_matches = []
             file_parts = file["matches"]
-            for i, part in enumerate(file_parts):
-                part_index += i
-                if model_result[part_index]:
+            for part in file_parts:
+                if part_index in model_result:
                     new_matches.append(part)
+                part_index += 1
             file["matches"] = new_matches
-            part_index += 1
+            print("Index: " + str(part_index))
 
         print_to_console("Search NL->PL - model:", "colbert")
         print_to_console("Search NL->PL - query:", query)
