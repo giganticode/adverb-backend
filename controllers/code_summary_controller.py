@@ -1,4 +1,5 @@
 from controllers.printing import print_to_console
+import os 
 from flask import json
 from flask.wrappers import Request
 import torch
@@ -21,6 +22,7 @@ class CodeSummaryController:
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
         model_name = "Salesforce/codet5-base-multi-sum"
         tokenizer = RobertaTokenizer.from_pretrained(model_name)
+        # model_name = os.path.join(os.getcwd(), "models", "salesforce-codet5") # finetuned_models_summarize_javascript_codet5_base.bin
 
         #################################################
         ### DEFAULT APPROACH USING NORMAL HUGGINGFACE ###

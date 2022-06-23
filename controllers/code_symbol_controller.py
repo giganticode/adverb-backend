@@ -1,4 +1,5 @@
 from controllers.printing import print_to_console
+import os
 from flask import json
 from flask.wrappers import Request
 import torch
@@ -37,7 +38,9 @@ class CodeSymbolController:
             result = list(map(lambda x: x["token_str"].strip(), result))
         else:
             print_to_console("New symbol name - model:", "Salesforce/codet5-base")
-            model = T5ForConditionalGeneration.from_pretrained("Salesforce/codet5-base")
+            model_name = "Salesforce/codet5-base"
+            # model_name = os.path.join(os.getcwd(), "models", "salesforce-codet5") # finetuned_models_summarize_javascript_codet5_base.bin
+            model = T5ForConditionalGeneration.from_pretrained(model_name)
             model.to(device)
             tokenizer = RobertaTokenizer.from_pretrained("Salesforce/codet5-base")
             device_tokenizer = tokenizer(text, return_tensors="pt").to(device)
