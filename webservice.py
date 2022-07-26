@@ -47,6 +47,20 @@ def get_summary():
         pass
     return "Bad request", "400"
 
+@app.route("/api/summaries", methods = ["POST"])
+def get_summaries():
+    try:
+        summaries = code_summary.get_summaries(request)
+        if summaries:
+            response = jsonify(summaries)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response
+    except Exception as e:
+        print(str(e))
+        traceback.print_exc()
+        pass
+    return "Bad request", "400"
+
 @app.route("/api/name", methods = ["POST"])
 def get_symbol_name():
     try:

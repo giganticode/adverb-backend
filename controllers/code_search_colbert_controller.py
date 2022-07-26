@@ -6,6 +6,7 @@ from colbert.infra import Run, RunConfig, ColBERTConfig
 from colbert.data import Collection
 from colbert import Indexer, Searcher
 import torch
+import shutil
 
 class CodeSearchColBertController:
 
@@ -23,6 +24,11 @@ class CodeSearchColBertController:
         content = json.loads(str(content))
         collection, _ = self.convert_json_to_collection(content)
         checkpoint = os.path.join(os.getcwd(), "models", "colbertv2.0")
+
+        # FIX FOR IMPROVEMENT: manually deleting old index, otherwise have to wait for 20 seconds (overwrite bug...)
+        index_folder = os.path.join(os.getcwd(), "experiments")
+        if os.path.exists(index_folder) and os.path.isdir(index_folder):
+            shutil.rmtree(index_folder, ignore_errors=True)
 
         nbits = 2   # encode each dimension with 2 bits
         doc_maxlen = 300   # truncate passages at 300 tokens
