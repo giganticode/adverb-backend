@@ -74,6 +74,8 @@ class CodeSearchColBertController:
             file_parts = file["matches"]
             for part in file_parts:
                 if part_index in model_result:
+                    part["rank"] = model_result[part_index]["rank"]
+                    part["score"] = model_result[part_index]["score"]
                     new_matches.append(part)
                 part_index += 1
             file["matches"] = new_matches

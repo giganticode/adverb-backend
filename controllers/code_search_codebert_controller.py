@@ -38,7 +38,7 @@ class CodeSearchCodeBertController:
                 norm_code_embedding = torch.nn.functional.normalize(code_embedding, p=2, dim=1)
                 similarity = torch.einsum("ac,bc->ab", norm_code_embedding, norm_query_embedding)
                 score = similarity[0, 0].item()
-                if score > 0.3:
+                if score > 0.2:
                     new_matches.append({"start": part["start"], "end": part["end"], "code": part["code"], "score": score})
             file["matches"] = new_matches
 
